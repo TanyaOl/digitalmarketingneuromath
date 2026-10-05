@@ -24,7 +24,7 @@ export const funnelStages: FunnelStage[] = [
   {
     id: "awareness",
     num: "01",
-    name: "Awareness",
+    name: "Впізнаваність",
     title: "Усвідомлення потреби",
     kpis: [
       { value: "10 000", label: "Охоплення контенту" },
@@ -48,7 +48,7 @@ export const funnelStages: FunnelStage[] = [
   {
     id: "consideration",
     num: "02",
-    name: "Consideration",
+    name: "Розгляд",
     title: "Пошук рішення",
     kpis: [
       { value: "500", label: "Відвідувачів сайту" },
@@ -79,7 +79,7 @@ export const funnelStages: FunnelStage[] = [
   {
     id: "conversion",
     num: "03",
-    name: "Conversion",
+    name: "Конверсія",
     title: "Дія",
     kpis: [
       { value: "105", label: "Відвідали пробний урок" },
@@ -102,7 +102,7 @@ export const funnelStages: FunnelStage[] = [
   {
     id: "loyalty",
     num: "04",
-    name: "Loyalty",
+    name: "Лояльність",
     title: "Лояльність",
     kpis: [
       { value: "80%", label: "Активність учнів на платформі" },
@@ -126,7 +126,7 @@ export const funnelStages: FunnelStage[] = [
   {
     id: "advocacy",
     num: "05",
-    name: "Advocacy",
+    name: "Адвокатування",
     title: "Адвокатування",
     kpis: [
       { value: "20%", label: "Рекомендації друзям" },
@@ -240,7 +240,7 @@ export const differentiators = [
 export const growthStrategy = [
   { num: "01", name: "Залучення", items: ["Google Ads", "Meta Ads", "SEO"] },
   { num: "02", name: "Довіра", items: ["Відгуки", "Кейси учнів", "Контент", "Результати"] },
-  { num: "03", name: "Scale", items: ["Referral program", "Ukrainians abroad", "Повторні продажі", "Partnerships"] },
+  { num: "03", name: "Масштабування", items: ["Реферальна програма", "Українці за кордоном", "Повторні продажі", "Партнерства"] },
 ];
 
 export const swot = {
@@ -254,7 +254,7 @@ export const forecastVsTarget = [
   ["Лідів на рік", "300–500", "300+"],
   ["Конверсія", "15–25%", "≥15%"],
   ["Учні", "45–125", "45+"],
-  ["Monthly revenue", "100–250 тис. грн", "≥100K"],
+  ["Дохід на місяць", "100–250 тис. грн", "≥100 тис."],
   ["Відгуків / кейсів", "30–50", "30+"],
   ["Повторні продажі", "40–60%", "≥40%"],
 ];
@@ -300,3 +300,44 @@ export const navItems = [
   ["measurement", "Вимірювання"],
   ["next", "Наступні кроки"],
 ] as const;
+
+// Креативи для соцмереж та приклади сторінок (з Google Drive)
+import car1 from "@/assets/creatives/car1.png.asset.json";
+import car2 from "@/assets/creatives/car2.png.asset.json";
+import car3 from "@/assets/creatives/car3.png.asset.json";
+import car4 from "@/assets/creatives/car4.png.asset.json";
+import car5 from "@/assets/creatives/car5.png.asset.json";
+import car6 from "@/assets/creatives/car6.png.asset.json";
+import car7 from "@/assets/creatives/car7.png.asset.json";
+import fbH from "@/assets/creatives/fb_h.png.asset.json";
+import fbSq from "@/assets/creatives/fb_sq.png.asset.json";
+import gSerp from "@/assets/creatives/g_serp.png.asset.json";
+import gStrat from "@/assets/creatives/g_strat.png.asset.json";
+import tiktok from "@/assets/creatives/tiktok.png.asset.json";
+import fbPage from "@/assets/creatives/fb_page.png.asset.json";
+import igPage1 from "@/assets/creatives/ig_page1.png.asset.json";
+import igPage2 from "@/assets/creatives/ig_page2.png.asset.json";
+
+export const carousel = [
+  { src: car1.url, title: "5 типових помилок на НМТ" },
+  { src: car2.url, title: "Поспіх у розв’язуванні" },
+  { src: car3.url, title: "Помилки у формулах" },
+  { src: car4.url, title: "Помилки з графіками" },
+  { src: car5.url, title: "Неуважне читання" },
+  { src: car6.url, title: "Нестача часу" },
+  { src: car7.url, title: "Безкоштовний пробний урок" },
+];
+
+export const creatives = [
+  { channel: "Facebook", title: "Горизонтальний пост", src: fbH.url },
+  { channel: "Facebook", title: "Квадратний пост", src: fbSq.url },
+  { channel: "TikTok", title: "Мокап TikTok", src: tiktok.url },
+  { channel: "Google Ads", title: "Пошукова видача «підготовка до НМТ»", src: gSerp.url },
+  { channel: "Google Ads", title: "Стратегія Google Ads", src: gStrat.url },
+];
+
+export const pageExamples = [
+  { channel: "Instagram", title: "Профіль «Математика для майбутнього»", src: igPage1.url },
+  { channel: "Instagram", title: "Профіль «Математика легко й сучасно»", src: igPage2.url },
+  { channel: "Facebook", title: "Сторінка NeuroMath Academy у Facebook", src: fbPage.url },
+];
