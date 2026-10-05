@@ -9,10 +9,10 @@ import * as D from "@/data/marketing";
 export const Route = createFileRoute("/marketing")({
   head: () => ({
     meta: [
-      { title: "Marketing Strategy Dashboard — NeuroMath Academy" },
+      { title: "Маркетингова стратегія — NeuroMath Academy" },
       { name: "description", content: "Прогноз результатів цифрового просування NeuroMath Academy на 2026–2027: воронка, KPI, канали, SWOT." },
-      { property: "og:title", content: "Marketing Strategy Dashboard — NeuroMath Academy" },
-      { property: "og:description", content: "Digital Marketing Forecast: аудиторія, воронка продажів, канали та прогнозовані KPI." },
+      { property: "og:title", content: "Маркетингова стратегія — NeuroMath Academy" },
+      { property: "og:description", content: "Прогноз цифрового маркетингу: аудиторія, воронка продажів, канали та прогнозовані KPI." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
