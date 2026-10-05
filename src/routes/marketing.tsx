@@ -418,7 +418,7 @@ function Channels() {
     <Section id="channels" eyebrow="Залучення" title="Маркетингові канали">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {D.channels.map((c, i) => {
-          const Icon = channelIcons[i];
+          const Icon = channelIcons[i] ?? Target;
           return (
             <Card key={c.name}>
               <div className="flex items-center gap-3">
