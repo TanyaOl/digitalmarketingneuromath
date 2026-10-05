@@ -2,12 +2,12 @@
 export type Metric = { value: string; label: string };
 
 export const forecastKPIs: Metric[] = [
-  { value: "300–500", label: "Leads / year" },
-  { value: "15–25%", label: "Lead → Paid conversion" },
-  { value: "45–125", label: "Students / year" },
-  { value: "100–250K UAH", label: "Expected monthly revenue" },
-  { value: "30–50", label: "Reviews / cases" },
-  { value: "40–60%", label: "Repeat sales" },
+  { value: "300–500", label: "Лідів на рік" },
+  { value: "15–25%", label: "Конверсія лід → оплата" },
+  { value: "45–125", label: "Учнів на рік" },
+  { value: "100–250 тис. грн", label: "Очікуваний дохід на місяць" },
+  { value: "30–50", label: "Відгуків / кейсів" },
+  { value: "40–60%", label: "Повторні продажі" },
 ];
 
 export type FunnelStage = {
@@ -59,7 +59,7 @@ export const funnelStages: FunnelStage[] = [
       "SEO",
       "Google Ads",
       "Meta Ads",
-      "Landing pages",
+      "Лендинги",
       "AI-діагностика",
       "Безкоштовний пробний урок",
       "Відгуки",
@@ -67,7 +67,7 @@ export const funnelStages: FunnelStage[] = [
       "Демонстрація переваг NeuroMath Academy",
     ],
     extra: {
-      title: "SEO keywords",
+      title: "Ключові слова SEO",
       items: [
         "підготовка до НМТ з математики",
         "математика онлайн",
@@ -84,7 +84,7 @@ export const funnelStages: FunnelStage[] = [
     kpis: [
       { value: "105", label: "Відвідали пробний урок" },
       { value: "40", label: "Оплатили курс" },
-      { value: "8%", label: "Website → Paid Customer" },
+      { value: "8%", label: "Сайт → оплата" },
     ],
     actions: [
       "Безкоштовна AI-діагностика",
@@ -153,13 +153,13 @@ export const conversionModel = {
 };
 
 export const fullFunnel = [
-  { value: "10 000", label: "Reach" },
-  { value: "500", label: "Website visitors" },
-  { value: "150", label: "Trial registrations" },
-  { value: "105", label: "Trial attendance" },
-  { value: "40", label: "Paid students" },
-  { value: "60%", label: "Retention" },
-  { value: "20%", label: "Referrals" },
+  { value: "10 000", label: "Охоплення" },
+  { value: "500", label: "Відвідувачі сайту" },
+  { value: "150", label: "Записи на пробний урок" },
+  { value: "105", label: "Відвідали пробний урок" },
+  { value: "40", label: "Оплатили курс" },
+  { value: "60%", label: "Утримання" },
+  { value: "20%", label: "Рекомендації" },
 ];
 
 export const aiDiagnostic = {
@@ -175,13 +175,13 @@ export const aiDiagnostic = {
 
 export const segments = [
   {
-    name: "Grades 5–9",
+    name: "5–9 класи",
     problem: ["Дитина не розуміє математику", "Прогалини в знаннях", "Низькі оцінки", "Проблеми з домашніми завданнями", "Втрата інтересу"],
     solution: ["Зрозумілі пояснення", "Індивідуальний темп", "Міні-групи 4–6 або індивідуальні заняття", "Інтерактивні тренажери", "Mind maps", "Регулярний контроль знань", "Звіти для батьків"],
     result: "Розуміння → самостійність → впевненість",
   },
   {
-    name: "Grades 10–11 / NMT",
+    name: "10–11 класи / НМТ",
     problem: ["Прогалини", "Низькі результати пробних тестів", "Страх НМТ", "Відсутність системної підготовки"],
     solution: ["Структурована підготовка", "Реальні типи НМТ-завдань", "Регулярні тести", "Аналіз помилок", "Персональний трек слабких тем", "Симуляції НМТ", "Підтримка викладача та AI"],
     result: "Система → контроль прогресу → впевненість → готовність до НМТ",
@@ -189,11 +189,11 @@ export const segments = [
 ];
 
 export const pillars = [
-  { name: "Understand", desc: "Зрозуміла математика" },
-  { name: "Personalize", desc: "Персональний підхід" },
-  { name: "Practice", desc: "Регулярна практика" },
-  { name: "Track", desc: "Контроль прогресу" },
-  { name: "Support", desc: "Викладач + AI 24/7" },
+  { name: "Розуміння", desc: "Зрозуміла математика" },
+  { name: "Персоналізація", desc: "Персональний підхід" },
+  { name: "Практика", desc: "Регулярна практика" },
+  { name: "Контроль", desc: "Контроль прогресу" },
+  { name: "Підтримка", desc: "Викладач + AI 24/7" },
 ];
 
 export const beforeAfter = [
@@ -213,88 +213,90 @@ export const trustFacts = [
   "Досвід олімпіадної підготовки",
 ];
 
-export const trustFlow = ["Expertise", "Methodology", "Technology", "Progress Tracking", "Trust"];
+export const trustFlow = ["Експертність", "Методика", "Технології", "Контроль прогресу", "Довіра"];
 
 export const channels = [
-  { name: "Google Ads", role: "Intent-based acquisition", focus: ["НМТ", "Математика онлайн", "Репетитор", "Пробний урок"], kpis: ["Impressions", "Clicks", "CTR", "CPC", "Conversions", "CPL"] },
-  { name: "Meta Ads", role: "Audience acquisition", focus: ["Parents", "Students", "Retargeting", "Awareness"], kpis: ["Reach", "Engagement", "Clicks", "Leads", "CPL"] },
-  { name: "SEO", role: "Organic acquisition", focus: ["Educational content", "NMT topics", "Math explanations"], kpis: ["Organic traffic", "Impressions", "Clicks", "CTR", "Positions"] },
-  { name: "Social Media", role: "Awareness + Trust", focus: ["Instagram", "Facebook", "TikTok", "Розбір задач", "Mini lessons", "NMT tips"], kpis: ["Reach", "Engagement", "Followers"] },
-  { name: "Email Marketing", role: "Retention + Repeat sales", focus: ["Useful content", "Progress", "Reminders", "Offers", "Reactivation"], kpis: ["Open rate", "CTR", "Repeat sales"] },
+  { name: "Google Ads", role: "Залучення за пошуковим наміром", focus: ["НМТ", "Математика онлайн", "Репетитор", "Пробний урок"], kpis: ["Покази", "Кліки", "CTR", "CPC", "Конверсії", "CPL"] },
+  { name: "Meta Ads", role: "Залучення аудиторії", focus: ["Батьки", "Учні", "Ретаргетинг", "Впізнаваність"], kpis: ["Охоплення", "Engagement", "Clicks", "Leads", "CPL"] },
+  { name: "SEO", role: "Органічне залучення", focus: ["Освітній контент", "Теми НМТ", "Пояснення з математики"], kpis: ["Органічний трафік", "Покази", "Кліки", "CTR", "Позиції"] },
+  { name: "Соцмережі", role: "Впізнаваність + довіра", focus: ["Instagram", "Facebook", "TikTok", "Розбір задач", "Міні-уроки", "Поради до НМТ"], kpis: ["Охоплення", "Engagement", "Followers"] },
+  { name: "Email-маркетинг", role: "Retention + Повторні продажі", focus: ["Корисний контент", "Прогрес", "Нагадування", "Пропозиції", "Реактивація"], kpis: ["Open rate", "CTR", "Повторні продажі"] },
 ];
 
 export const messageMatrix = [
-  ["Підготовка до НМТ онлайн", "Google Ads", "Free diagnostic"],
-  ["Складну математику можна зрозуміти", "SEO", "Visit website"],
-  ["Реальні результати та корисні пояснення", "Social Media", "Follow / Visit"],
-  ["Підтримка та корисний контент", "Email", "Return / Continue"],
-  ["Рекомендуй NeuroMath", "Referral", "Invite a friend"],
+  ["Підготовка до НМТ онлайн", "Google Ads", "Безкоштовна діагностика"],
+  ["Складну математику можна зрозуміти", "SEO", "Перейти на сайт"],
+  ["Реальні результати та корисні пояснення", "Соцмережі", "Підписатися / Перейти"],
+  ["Підтримка та корисний контент", "Email", "Повернутися / Продовжити"],
+  ["Рекомендуй NeuroMath", "Реферальна програма", "Запросити друга"],
 ];
 
 export const differentiators = [
-  { name: "Personalization", desc: "Індивідуальний навчальний маршрут" },
+  { name: "Персоналізація", desc: "Індивідуальний навчальний маршрут" },
   { name: "AI 24/7", desc: "Постійна цифрова підтримка" },
-  { name: "Measurable progress", desc: "Прозорий контроль результатів" },
+  { name: "Вимірюваний прогрес", desc: "Прозорий контроль результатів" },
 ];
 
 export const growthStrategy = [
-  { num: "01", name: "Acquisition", items: ["Google Ads", "Meta Ads", "SEO"] },
-  { num: "02", name: "Trust", items: ["Reviews", "Student cases", "Content", "Results"] },
-  { num: "03", name: "Scale", items: ["Referral program", "Ukrainians abroad", "Repeat sales", "Partnerships"] },
+  { num: "01", name: "Залучення", items: ["Google Ads", "Meta Ads", "SEO"] },
+  { num: "02", name: "Довіра", items: ["Відгуки", "Кейси учнів", "Контент", "Результати"] },
+  { num: "03", name: "Scale", items: ["Referral program", "Ukrainians abroad", "Повторні продажі", "Partnerships"] },
 ];
 
 export const swot = {
-  Strengths: ["Персоналізація", "AI consultant 24/7", "Online format", "Безкоштовний пробний урок", "Аналіз прогресу", "Сучасна методика"],
-  Weaknesses: ["Новий бренд", "Мало відгуків на старті", "Залежність від paid acquisition", "Низька початкова впізнаваність"],
-  Opportunities: ["Зростання онлайн-освіти", "Високий попит на НМТ", "Українці за кордоном", "AI як конкурентна перевага", "Referral marketing"],
-  Threats: ["Висока конкуренція", "Цінова чутливість", "Недовіра до нового бренду", "Зростання вартості реклами", "Зміни формату НМТ"],
+  "Сильні сторони": ["Персоналізація", "AI-консультант 24/7", "Онлайн-формат", "Безкоштовний пробний урок", "Аналіз прогресу", "Сучасна методика"],
+  "Слабкі сторони": ["Новий бренд", "Мало відгуків на старті", "Залежність від платної реклами", "Низька початкова впізнаваність"],
+  "Можливості": ["Зростання онлайн-освіти", "Високий попит на НМТ", "Українці за кордоном", "AI як конкурентна перевага", "Реферальний маркетинг"],
+  "Загрози": ["Висока конкуренція", "Цінова чутливість", "Недовіра до нового бренду", "Зростання вартості реклами", "Зміни формату НМТ"],
 };
 
 export const forecastVsTarget = [
-  ["Leads / year", "300–500", "300+"],
-  ["Conversion", "15–25%", "≥15%"],
-  ["Students", "45–125", "45+"],
-  ["Monthly revenue", "100–250K UAH", "≥100K"],
-  ["Reviews / cases", "30–50", "30+"],
-  ["Repeat sales", "40–60%", "≥40%"],
+  ["Лідів на рік", "300–500", "300+"],
+  ["Конверсія", "15–25%", "≥15%"],
+  ["Учні", "45–125", "45+"],
+  ["Monthly revenue", "100–250 тис. грн", "≥100K"],
+  ["Відгуків / кейсів", "30–50", "30+"],
+  ["Повторні продажі", "40–60%", "≥40%"],
 ];
 
 // actual: null → rendered as "—" until real data is connected
 export const forecastVsActual: { kpi: string; forecast: string; actual: string | null }[] = [
-  { kpi: "Website visitors", forecast: "500", actual: null },
-  { kpi: "Trial registrations", forecast: "150", actual: null },
-  { kpi: "AI diagnostics", forecast: "120", actual: null },
-  { kpi: "Trial attendance", forecast: "105", actual: null },
-  { kpi: "Paid students", forecast: "40", actual: null },
-  { kpi: "Retention", forecast: "60%", actual: null },
-  { kpi: "Positive reviews", forecast: "95%", actual: null },
-  { kpi: "Referrals", forecast: "20%", actual: null },
+  { kpi: "Відвідувачі сайту", forecast: "500", actual: null },
+  { kpi: "Записи на пробний урок", forecast: "150", actual: null },
+  { kpi: "AI-діагностики", forecast: "120", actual: null },
+  { kpi: "Відвідали пробний урок", forecast: "105", actual: null },
+  { kpi: "Оплатили курс", forecast: "40", actual: null },
+  { kpi: "Утримання", forecast: "60%", actual: null },
+  { kpi: "Позитивні відгуки", forecast: "95%", actual: null },
+  { kpi: "Рекомендації", forecast: "20%", actual: null },
 ];
 
 export const measurement = [
-  { area: "Website", tool: "Google Analytics 4", metrics: ["Sessions", "Traffic sources", "Users", "Leads", "Conversion rate"] },
-  { area: "Google Ads", tool: "Google Ads", metrics: ["Impressions", "Clicks", "CTR", "CPC", "Conversions", "CPL"] },
-  { area: "SEO", tool: "Google Search Console", metrics: ["Impressions", "Clicks", "CTR", "Organic traffic", "Average position"] },
-  { area: "Email", tool: "Email platform", metrics: ["Delivery", "Open rate", "CTR", "Conversions", "Repeat sales"] },
+  { area: "Сайт", tool: "Google Analytics 4", metrics: ["Сесії", "Джерела трафіку", "Користувачі", "Ліди", "Конверсія"] },
+  { area: "Google Ads", tool: "Google Ads", metrics: ["Покази", "Кліки", "CTR", "CPC", "Конверсії", "CPL"] },
+  { area: "SEO", tool: "Google Search Console", metrics: ["Покази", "Кліки", "CTR", "Органічний трафік", "Середня позиція"] },
+  { area: "Email", tool: "Email-платформа", metrics: ["Delivery", "Open rate", "CTR", "Conversions", "Повторні продажі"] },
 ];
 
-export const futureIntegrations = ["Google Analytics", "Google Ads", "Google Search Console", "Meta Ads", "Email marketing platform"];
+export const futureIntegrations = ["Google Analytics", "Google Ads", "Google Search Console", "Meta Ads", "Email-платформа"];
 
-export const roadmap = ["Launch", "Acquisition", "Trust", "Optimization", "Scale"];
+export const roadmap = ["Запуск", "Залучення", "Довіра", "Оптимізація", "Масштабування"];
 
-export const nextSteps = ["Launch campaigns", "Collect real data", "Measure funnel", "Compare Forecast vs Actual", "Optimize campaigns", "Scale successful channels"];
+export const nextSteps = ["Запуск кампаній", "Збір реальних даних", "Вимірювання воронки", "Порівняння прогнозу й факту", "Оптимізація кампаній", "Масштабування успішних каналів"];
 
 export const navItems = [
-  ["overview", "Overview"],
-  ["kpi", "Forecast KPIs"],
-  ["funnel", "Sales Funnel"],
-  ["value", "Value Proposition"],
-  ["audience", "Target Audience"],
-  ["channels", "Channels"],
-  ["competitive", "Competitive Strategy"],
-  ["growth", "Growth Strategy"],
+  ["overview", "Огляд"],
+  ["kpi", "Прогнозні KPI"],
+  ["funnel", "Воронка продажів"],
+  ["value", "Ціннісна пропозиція"],
+  ["audience", "Цільова аудиторія"],
+  ["channels", "Канали"],
+  ["competitive", "Конкурентна стратегія"],
+  ["growth", "Стратегія зростання"],
   ["swot", "SWOT"],
-  ["actual", "Forecast vs Actual"],
-  ["measurement", "Measurement"],
-  ["next", "Next Steps"],
+  ["creatives", "Креативи"],
+  ["pages", "Приклади сторінок"],
+  ["actual", "Прогноз і факт"],
+  ["measurement", "Вимірювання"],
+  ["next", "Наступні кроки"],
 ] as const;
