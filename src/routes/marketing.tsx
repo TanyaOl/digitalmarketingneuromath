@@ -592,7 +592,7 @@ function Final() {
 const Shot = ({ src, title, channel, className = "" }: { src: string; title: string; channel: string; className?: string }) => (
   <figure className={`group overflow-hidden rounded-2xl border bg-card shadow-card ${className}`}>
     <a href={src} target="_blank" rel="noreferrer" className="block overflow-hidden bg-muted">
-      <img src={src} alt={title} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+      <img src={src} alt={title} loading="lazy" className="h-full w-full object-contain transition duration-500 group-hover:scale-105" />
     </a>
     <figcaption className="flex items-center justify-between gap-2 p-4">
       <span className="font-medium">{title}</span>
