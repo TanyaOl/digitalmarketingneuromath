@@ -143,10 +143,10 @@ function S1() {
               </div>
             ))}
           </div>
-          <Flow items={["Дослідження", "Стратегія", "Запуск"]} />
         </div>
-        <div className={`min-h-0 ${R}`} style={rise(3)}>
-          <Browser src={siteShot.url} alt="Актуальний сайт NeuroMath Academy" className="max-h-full" />
+        <div className={`flex min-h-0 flex-col gap-5 ${R}`} style={rise(3)}>
+          <Browser src={siteShot.url} alt="Актуальний сайт NeuroMath Academy" className="min-h-0" />
+          <Flow className="justify-center" items={["Дослідження", "Стратегія", "Запуск"]} />
         </div>
       </div>
     </Frame>
@@ -404,7 +404,7 @@ function S9() {
   ];
   return (
     <Frame n={9} kicker="Прогрів ліда" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
-      <div className="grid h-[calc(100%-64px)] grid-cols-[35fr_30fr_35fr] gap-6">
+      <div className="grid h-[calc(100%-84px)] grid-cols-[35fr_30fr_35fr] gap-6">
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
           <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><Mail className="size-4 text-primary" /> Персональний звіт · результат тесту</div>
           <img src={report1.url} alt="Персональний звіт NeuroMath, сторінка 1" className="min-h-0 w-full flex-1 object-cover object-top" />
