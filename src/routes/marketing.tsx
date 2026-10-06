@@ -430,7 +430,7 @@ function S8() {
             </div>
           ))}
         </div>
-        <div className="relative mt-10 grid grid-cols-10 gap-x-3">
+        <div className="relative mt-20 grid grid-cols-10 gap-x-3">
           <svg className="pointer-events-none absolute inset-x-0 top-[22px] h-1 w-full" preserveAspectRatio="none" viewBox="0 0 100 2">
             <line x1="5" y1="1" x2="95" y2="1" stroke="var(--border)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
             <line x1="5" y1="1" x2="95" y2="1" stroke="var(--primary)" strokeOpacity="0.45" strokeWidth="3" className="draw-line" vectorEffect="non-scaling-stroke" />
@@ -453,7 +453,7 @@ function S8() {
             );
           })}
         </div>
-        <div key={a} className="mt-6 grid grid-cols-[1.1fr_1fr_1fr_1fr] items-center gap-6 rounded-3xl border border-primary/25 bg-accent/40 px-7 py-5 animate-in fade-in duration-300">
+        <div key={a} className="mt-12 grid grid-cols-[1.1fr_1fr_1fr_1fr] items-center gap-6 rounded-3xl border border-primary/25 bg-accent/40 px-7 py-5 animate-in fade-in duration-300">
           <div className="flex items-center gap-4"><span className="grid size-12 place-items-center rounded-2xl bg-brand text-primary-foreground"><cur.I className="size-6" /></span><div><div className="text-[13px] font-bold tracking-wider text-primary uppercase">{String(a + 1).padStart(2, "0")} · етап</div><div className="text-[22px] font-extrabold">{cur.n}</div></div></div>
           <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Дія користувача</div><div className="mt-1 text-[18px] font-semibold">«{cur.act}»</div></div>
           <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Touchpoint</div><div className="mt-1 text-[18px] font-semibold">{cur.tp}</div></div>
