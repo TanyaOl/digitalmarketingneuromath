@@ -2,7 +2,7 @@ import teslia from "@/assets/teslia.jpg.asset.json";
 import beetrootLogo from "@/assets/beetroot-academy.png.asset.json";
 import { createFileRoute } from "@tanstack/react-router";
 import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp } from "lucide-react";
+import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp, BookOpen, BarChart3, Heart, Star } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import emailShot from "@/assets/creatives/email.png.asset.json";
