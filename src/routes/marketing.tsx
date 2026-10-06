@@ -1,6 +1,8 @@
+import teslia from "@/assets/teslia.jpg.asset.json";
+import beetrootLogo from "@/assets/beetroot-academy.png.asset.json";
 import { createFileRoute } from "@tanstack/react-router";
 import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp } from "lucide-react";
+import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp, BookOpen, BarChart3, Heart, Star } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import emailShot from "@/assets/creatives/email.png.asset.json";
@@ -849,7 +851,39 @@ function A2() {
     </ApxFrame>
   );
 }
-const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }];
+function A3() {
+  const pts: [typeof BookOpen, string][] = [[BookOpen, "Цінні знання та практичні навички"], [BarChart3, "Структурований підхід до проєкту"], [Users, "Підтримка та натхнення протягом навчання"]];
+  return (
+    <div className="slide-canvas relative flex h-full w-full overflow-hidden bg-background px-20 py-16">
+      <div className="pointer-events-none absolute -right-32 -bottom-40 size-[620px] rounded-full bg-primary/[0.07] blur-3xl" />
+      <div className="relative flex w-[58%] flex-col">
+        <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground"><Heart className="size-4 fill-current" />ПОДЯКА</span>
+        <div className="mt-8 flex items-center gap-10">
+          <h2 className="font-display text-[104px] leading-none font-bold tracking-[-0.03em] text-brand">Дякую</h2>
+          <img src={beetrootLogo.url} alt="Beetroot Academy" className="h-16 rounded-xl" />
+        </div>
+        <p className="mt-8 max-w-[820px] text-[26px] leading-[1.45] text-foreground/85">За курс <b>Digital Marketing</b> у <b>Beetroot Academy</b>, який допоміг пройти шлях від дослідження ринку та стратегії до створення цілісної системи просування NeuroMath Academy.</p>
+        <div className="mt-10 grid grid-cols-3 gap-4">
+          {pts.map(([I, t]) => (
+            <div key={t} className="rounded-3xl border border-primary/10 bg-accent/60 p-6"><I className="size-8 text-primary" /><div className="mt-4 text-[18px] leading-snug">{t}</div></div>
+          ))}
+        </div>
+        <div className="mt-14 flex items-center gap-6">
+          <div className="grid size-24 shrink-0 place-items-center rounded-full bg-accent"><Star className="size-10 text-primary" /></div>
+          <div><div className="text-[18px] text-muted-foreground">Особлива подяка викладачу</div><div className="font-display text-[40px] leading-tight font-bold text-primary">Євгенію Теслі</div><div className="text-[18px] text-foreground/80">за знання, практику, підтримку та натхнення протягом навчання.</div></div>
+        </div>
+      </div>
+      <div className="relative ml-auto flex w-[36%] items-center">
+        <div className="absolute inset-x-6 top-6 bottom-20 rotate-3 rounded-[32px] bg-accent" />
+        <figure className="relative w-full">
+          <img src={teslia.url} alt="Євгеній Тесля, викладач Beetroot Academy" className="aspect-[4/5] w-full rounded-[28px] object-cover shadow-card" />
+          <figcaption className="mt-4 text-center text-[16px] text-muted-foreground">Євгеній Тесля · викладач Digital Marketing</figcaption>
+        </figure>
+      </div>
+    </div>
+  );
+}
+const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }, { t: "Подяка · Beetroot Academy", C: A3 }];
 
 function ApxLayer({ onClose }: { onClose: () => void }) {
   const [v, setV] = useState<number | null>(null);
@@ -857,7 +891,7 @@ function ApxLayer({ onClose }: { onClose: () => void }) {
     const k = (e: KeyboardEvent) => {
       e.stopImmediatePropagation();
       if (e.key === "Escape") { e.preventDefault(); onClose(); }
-      else if (v !== null && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); setV((x) => (x! + 1) % 2); }
+      else if (v !== null && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); setV((x) => Math.min(APX.length - 1, Math.max(0, x! + (e.key === "ArrowRight" ? 1 : -1)))); }
     };
     window.addEventListener("keydown", k, true);
     return () => window.removeEventListener("keydown", k, true);
@@ -884,9 +918,9 @@ function ApxLayer({ onClose }: { onClose: () => void }) {
       <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
         <button onClick={onClose} className={pill}><ChevronLeft className="size-4" />Назад до презентації</button>
         <span className="mx-1 h-6 w-px bg-border" />
-        <button onClick={() => setV((v + 1) % 2)} disabled={v === 0} className={`${pill} disabled:opacity-35`}>← Попередній</button>
+        <button onClick={() => setV(v - 1)} disabled={v === 0} className={`${pill} disabled:opacity-35`}>← Попередній</button>
         <div className="flex gap-1.5">{APX.map((_, j) => <button key={j} aria-label={`Додаток ${j + 1}`} onClick={() => setV(j)} className={`size-2.5 rounded-full ${j === v ? "bg-primary" : "bg-border"}`} />)}</div>
-        <button onClick={() => setV((v + 1) % 2)} disabled={v === 1} className={`${pill} disabled:opacity-35`}>Наступний →</button>
+        <button onClick={() => setV(v + 1)} disabled={v === APX.length - 1} className={`${pill} disabled:opacity-35`}>Наступний →</button>
         <span className="mx-1 h-6 w-px bg-border" />
         <button onClick={onClose} className={pill} aria-label="Закрити"><X className="size-4" />Закрити</button>
       </div>
