@@ -337,7 +337,7 @@ function S5() {
   );
 }
 
-type Shot = { src: string; title: string };
+type Shot = { src: string; title: string; tab?: string; info?: { head: string; rows: [string, string][] } };
 function SocialModal({ label, items, onClose }: { label: string; items: Shot[]; onClose: () => void }) {
   const [i, setI] = useState(0);
   const [dir, setDir] = useState(1);
@@ -360,20 +360,27 @@ function SocialModal({ label, items, onClose }: { label: string; items: Shot[]; 
       <div className="relative flex max-h-[94vh] max-w-[94vw] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 border-b px-5 py-3 text-sm font-semibold">
           <span>{label}</span><span className="truncate font-normal text-muted-foreground">{it.title}</span>
-          {n > 1 && <span className="tabular-nums text-primary">{i + 1} / {n}</span>}
+          {n > 1 && !it.tab && <span className="tabular-nums text-primary">{i + 1} / {n}</span>}
           <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
         </div>
         <div className="relative flex min-h-0 items-center justify-center overflow-auto bg-muted/40 p-4"
           onTouchStart={(e) => { touch.current = e.touches[0]!.clientX; }}
           onTouchEnd={(e) => { if (touch.current == null || n < 2) return; const dx = e.changedTouches[0]!.clientX - touch.current; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); touch.current = null; }}>
           <img key={i} src={it.src} alt={it.title}
-            className={`block max-h-[calc(94vh-140px)] max-w-[min(900px,88vw)] rounded-xl object-contain animate-in fade-in duration-300 ${n > 1 ? (dir > 0 ? "slide-in-from-right-6" : "slide-in-from-left-6") : ""}`} />
+            className={`block ${it.info ? "max-h-[calc(94vh-300px)]" : "max-h-[calc(94vh-140px)]"} max-w-[min(900px,88vw)] rounded-xl object-contain animate-in fade-in duration-300 ${n > 1 ? (dir > 0 ? "slide-in-from-right-6" : "slide-in-from-left-6") : ""}`} />
           {n > 1 && <>
             <button onClick={() => go(-1)} aria-label="Попередній" className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border bg-card shadow-card hover:bg-accent"><ChevronLeft className="size-5" /></button>
             <button onClick={() => go(1)} aria-label="Наступний" className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border bg-card shadow-card hover:bg-accent"><ChevronRight className="size-5" /></button>
           </>}
         </div>
-        {n > 1 && <div className="flex justify-center gap-2 border-t py-3">
+        {it.info && <div className="border-t px-5 py-3 text-[14px] leading-[1.5]">
+          <div className="mb-1 text-[12px] font-bold tracking-wider text-primary">{it.info.head}</div>
+          <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">{it.info.rows.map(([k, v]) => <Fragment key={k}><span className="font-semibold text-muted-foreground">{k}</span><span>{v}</span></Fragment>)}</div>
+        </div>}
+        {n > 1 && items[0]!.tab && <div className="flex justify-center gap-2 border-t py-3">
+          {items.map((x, j) => <button key={j} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`rounded-full border px-4 py-1.5 text-[12px] font-bold tracking-wider transition-colors ${j === i ? "border-primary bg-primary text-primary-foreground" : "hover:bg-accent"}`}>{x.tab}</button>)}
+        </div>}
+        {n > 1 && !items[0]!.tab && <div className="flex justify-center gap-2 border-t py-3">
           {items.map((_, j) => <button key={j} aria-label={`Слайд ${j + 1}`} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`size-2.5 rounded-full transition-colors ${j === i ? "bg-primary" : "bg-border hover:bg-primary/50"}`} />)}
         </div>}
       </div>
@@ -443,24 +450,35 @@ function S6() {
 function S7() {
   const cr = D.creatives;
   const Steps = ({ items }: { items: string[] }) => <Flow items={items} />;
+  const [m, setM] = useState<number | null>(null);
+  const g: Shot = { src: cr[3]!.src, title: cr[3]!.title, tab: "GOOGLE SEARCH", info: { head: "GOOGLE SEARCH", rows: [["Роль", "Перехоплення сформованого попиту"], ["Мета", "Залучити користувачів, які вже активно шукають підготовку з математики / НМТ"], ["Етап Customer Journey", "ACQUISITION / ЗАЛУЧЕННЯ"], ["CTA / наступний крок", "Перехід на сайт → тест / пробний урок"]] } };
+  const mi = { head: "META ADS", rows: [["Роль", "Формування попиту"], ["Мета", "Привернути увагу холодної аудиторії та сформувати інтерес до NeuroMath Academy"], ["Етап Customer Journey", "ACQUISITION / ЗАЛУЧЕННЯ"], ["Наступний крок", "Creative → сайт → тест / пробний урок"]] as [string, string][] };
+  const items: Shot[] = [g, { src: cr[0]!.src, title: cr[0]!.title, tab: "META ADS · стрічка", info: mi }, { src: D.carousel[6]!.src, title: D.carousel[6]!.title, tab: "META ADS · пробний урок", info: mi }];
+  const btn = "group relative flex min-h-0 cursor-pointer flex-col rounded-2xl text-left transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-2 hover:ring-primary/50";
+  const cue = (t: string) => <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[12px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">{t}</span>;
   return (
+    <>
+    {m !== null && <SocialModal key={m} label="Paid Media · концепція" items={m === 0 ? items : [...items.slice(m), ...items.slice(0, m)]} onClose={() => setM(null)} />}
     <Frame n={7} kicker="PROMOTION / PAID MEDIA" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
       <div className="grid h-full grid-cols-2 gap-6">
         <div className="flex min-h-0 flex-col gap-4">
           <div className="text-2xl font-extrabold">Google Search · <span className="text-primary">перехоплення попиту</span></div>
-          <Img src={cr[3]!.src} alt={cr[3]!.title} i={2} className="flex-1" label="«Підготовка до НМТ з математики» · «Безкоштовний пробний урок»" />
+          <button type="button" className={`${btn} flex-1`} onClick={() => setM(0)}>
+            <Img src={cr[3]!.src} alt={cr[3]!.title} i={2} className="h-full w-full" label="«Підготовка до НМТ з математики» · «Безкоштовний пробний урок»" />{cue("Переглянути кампанію ↗")}
+          </button>
           <Steps items={["Сформований попит", "Google Search", "Сайт"]} />
         </div>
         <div className="flex min-h-0 flex-col gap-4">
           <div className="text-2xl font-extrabold">Meta Ads · <span className="text-primary">формування попиту</span></div>
           <div className="grid min-h-0 flex-1 grid-cols-[1.4fr_1fr] gap-4">
-            <Img src={cr[0]!.src} alt={cr[0]!.title} i={3} label="Креатив для стрічки" />
-            <Img src={D.carousel[6]!.src} alt={D.carousel[6]!.title} i={4} label="Пробний урок" />
+            <button type="button" className={btn} onClick={() => setM(1)}><Img src={cr[0]!.src} alt={cr[0]!.title} i={3} className="h-full w-full" label="Креатив для стрічки" />{cue("Переглянути креатив ↗")}</button>
+            <button type="button" className={btn} onClick={() => setM(2)}><Img src={D.carousel[6]!.src} alt={D.carousel[6]!.title} i={4} className="h-full w-full" label="Пробний урок" />{cue("Переглянути креатив ↗")}</button>
           </div>
           <Steps items={["Впізнаваність", "Інтерес", "Ремаркетинг"]} />
         </div>
       </div>
     </Frame>
+    </>
   );
 }
 
