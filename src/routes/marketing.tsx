@@ -5,7 +5,10 @@ import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import emailShot from "@/assets/creatives/email.png.asset.json";
 import { createPortal } from "react-dom";
-import report1 from "@/assets/creatives/report1.png.asset.json";
+import reportPage1 from "@/assets/report-page-1.jpg.asset.json";
+import reportPage2 from "@/assets/report-page-2.jpg.asset.json";
+import reportPage3 from "@/assets/report-page-3.jpg.asset.json";
+import reportPage4 from "@/assets/report-page-4.jpg.asset.json";
 
 export const Route = createFileRoute("/marketing")({
   head: () => ({
@@ -488,8 +491,32 @@ function EmailModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function ReportModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopImmediatePropagation(); e.preventDefault(); onClose(); } else e.stopImmediatePropagation(); };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose]);
+  return createPortal(
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 border-b px-5 py-3 text-sm font-semibold"><FileText className="size-4 text-primary" />Персональний звіт NeuroMath Academy · 34/45 · 4 сторінки
+          <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
+        </div>
+        <div className="min-h-0 overflow-y-auto">
+          {[reportPage1, reportPage2, reportPage3, reportPage4].map((p, i) => (
+            <img key={i} src={p.url} alt={`Персональний звіт NeuroMath, сторінка ${i + 1}`} className="block w-full" />
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function S9() {
   const [open, setOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const groups = [
     { t: "Сильні", I: Check, cls: "text-teal", items: "Числа та вирази · Рівняння · Ймовірність" },
     { t: "Увага", I: CircleDot, cls: "text-spark-foreground", items: "Функції · Планіметрія" },
@@ -498,6 +525,7 @@ function S9() {
   return (
     <>
     {open && <EmailModal onClose={() => setOpen(false)} />}
+    {reportOpen && <ReportModal onClose={() => setReportOpen(false)} />}
     <Frame n={9} kicker="LEAD NURTURING / ПРОГРІВ ЛІДА" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
       <div className="grid h-[calc(100%-64px)] grid-cols-[35fr_28fr_35fr] gap-6">
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
@@ -523,8 +551,13 @@ function S9() {
           ))}
         </div>
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(4)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> 03 · PDF · персональний звіт</div>
-          <img src={report1.url} alt="Персональний PDF-звіт NeuroMath" className="min-h-0 w-full flex-1 object-cover object-top" />
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> 03 · PDF · персональний звіт
+            <button onClick={() => setReportOpen(true)} className="ml-auto inline-flex items-center gap-1 rounded-full border border-primary/30 bg-card px-3 py-0.5 text-[14px] font-semibold text-primary transition hover:bg-accent">Переглянути звіт <ExternalLink className="size-3.5" /></button>
+          </div>
+          <button onClick={() => setReportOpen(true)} className="group/rp relative min-h-0 flex-1 overflow-hidden bg-card" aria-label="Переглянути звіт">
+            <img src={reportPage1.url} alt="Персональний PDF-звіт NeuroMath" className="w-full object-cover object-top transition duration-500 group-hover/rp:scale-[1.02]" />
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+          </button>
         </div>
       </div>
       <Flow className="absolute right-0 bottom-0 left-0 justify-center" items={["Тест", "Результат", "Email", "PDF", "Пробний урок", "Покупка"]} />
