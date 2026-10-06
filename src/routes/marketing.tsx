@@ -337,33 +337,97 @@ function S5() {
   );
 }
 
+type Shot = { src: string; title: string };
+function SocialModal({ label, items, onClose }: { label: string; items: Shot[]; onClose: () => void }) {
+  const [i, setI] = useState(0);
+  const [dir, setDir] = useState(1);
+  const n = items.length;
+  const go = useCallback((d: number) => { setDir(d); setI((v) => (v + d + n) % n); }, [n]);
+  const touch = useRef<number | null>(null);
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      e.stopImmediatePropagation();
+      if (e.key === "Escape") { e.preventDefault(); onClose(); }
+      else if (n > 1 && e.key === "ArrowRight") { e.preventDefault(); go(1); }
+      else if (n > 1 && e.key === "ArrowLeft") { e.preventDefault(); go(-1); }
+    };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose, go, n]);
+  const it = items[i]!;
+  return createPortal(
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative flex max-h-[94vh] max-w-[94vw] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 border-b px-5 py-3 text-sm font-semibold">
+          <span>{label}</span><span className="truncate font-normal text-muted-foreground">{it.title}</span>
+          {n > 1 && <span className="tabular-nums text-primary">{i + 1} / {n}</span>}
+          <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 shrink-0 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
+        </div>
+        <div className="relative flex min-h-0 items-center justify-center overflow-auto bg-muted/40 p-4"
+          onTouchStart={(e) => { touch.current = e.touches[0]!.clientX; }}
+          onTouchEnd={(e) => { if (touch.current == null || n < 2) return; const dx = e.changedTouches[0]!.clientX - touch.current; if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1); touch.current = null; }}>
+          <img key={i} src={it.src} alt={it.title}
+            className={`block max-h-[calc(94vh-140px)] max-w-[min(900px,88vw)] rounded-xl object-contain animate-in fade-in duration-300 ${n > 1 ? (dir > 0 ? "slide-in-from-right-6" : "slide-in-from-left-6") : ""}`} />
+          {n > 1 && <>
+            <button onClick={() => go(-1)} aria-label="Попередній" className="absolute left-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border bg-card shadow-card hover:bg-accent"><ChevronLeft className="size-5" /></button>
+            <button onClick={() => go(1)} aria-label="Наступний" className="absolute right-3 top-1/2 grid size-10 -translate-y-1/2 place-items-center rounded-full border bg-card shadow-card hover:bg-accent"><ChevronRight className="size-5" /></button>
+          </>}
+        </div>
+        {n > 1 && <div className="flex justify-center gap-2 border-t py-3">
+          {items.map((_, j) => <button key={j} aria-label={`Слайд ${j + 1}`} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`size-2.5 rounded-full transition-colors ${j === i ? "bg-primary" : "bg-border hover:bg-primary/50"}`} />)}
+        </div>}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+const clickable = "group relative cursor-pointer overflow-hidden rounded-xl bg-muted transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-2 hover:ring-primary/50";
+function Cue() {
+  return <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-card/90 px-2.5 py-1 text-[12px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">Переглянути ↗</span>;
+}
+
 function S6() {
   const car = D.carousel;
   const pg = D.pageExamples;
   const cr = D.creatives;
   const pillars = ["Навчальний контент", "НМТ", "Методика / експертність", "Конверсійний контент"];
+  const [m, setM] = useState<{ label: string; items: Shot[] } | null>(null);
+  const open = (label: string, items: Shot[]) => () => setM({ label, items });
   return (
+    <>
+    {m && <SocialModal label={m.label} items={m.items} onClose={() => setM(null)} />}
     <Frame n={6} kicker="PROMOTION / SOCIAL MEDIA" badge={<Badge tone="warn">Концепція · канали ще не запущені</Badge>} title="Як NeuroMath буде виглядати в Social Media">
       <div className="grid h-[calc(100%-64px)] grid-cols-[1.35fr_1fr_1fr] gap-5">
         <div className={`flex min-h-0 flex-col gap-3 rounded-3xl border bg-card p-4 shadow-card ${R}`} style={rise(2)}>
           <div className="text-lg font-bold">Instagram</div>
           <div className="grid min-h-0 flex-1 grid-cols-2 gap-3">
-            <img src={pg[0]!.src} alt={pg[0]!.title} className="h-full w-full rounded-xl bg-muted object-contain" />
+            <button type="button" className={clickable} onClick={open("Instagram · профіль", [pg[0]!, pg[1]!])}>
+              <img src={pg[0]!.src} alt={pg[0]!.title} className="h-full w-full object-contain" /><Cue />
+            </button>
             <div className="grid min-h-0 grid-rows-2 gap-3">
-              <img src={car[0]!.src} alt={car[0]!.title} className="h-full w-full rounded-xl bg-muted object-contain" />
-              <img src={car[2]!.src} alt={car[2]!.title} className="h-full w-full rounded-xl bg-muted object-contain" />
+              <button type="button" className={clickable} onClick={open("Instagram · карусель", car)}>
+                <img src={car[0]!.src} alt={car[0]!.title} className="h-full w-full object-contain" /><Cue />
+              </button>
+              <button type="button" className={clickable} onClick={open("Instagram · карусель", car)}>
+                <img src={car[2]!.src} alt={car[2]!.title} className="h-full w-full object-contain" /><Cue />
+              </button>
             </div>
           </div>
           <div className="text-[15px] text-muted-foreground">Профіль + карусель «Типові помилки на НМТ»</div>
         </div>
         <div className={`flex min-h-0 flex-col gap-3 rounded-3xl border bg-card p-4 shadow-card ${R}`} style={rise(3)}>
           <div className="text-lg font-bold">TikTok</div>
-          <img src={cr[2]!.src} alt={cr[2]!.title} className="min-h-0 w-full flex-1 rounded-xl bg-muted object-contain" />
+          <button type="button" className={`${clickable} min-h-0 w-full flex-1`} onClick={open("TikTok", [cr[2]!])}>
+            <img src={cr[2]!.src} alt={cr[2]!.title} className="h-full w-full object-contain" /><Cue />
+          </button>
           <div className="text-[15px] text-muted-foreground">Профіль і обкладинки відео</div>
         </div>
         <div className={`flex min-h-0 flex-col gap-3 rounded-3xl border bg-card p-4 shadow-card ${R}`} style={rise(4)}>
           <div className="text-lg font-bold">Facebook</div>
-          <img src={pg[2]!.src} alt={pg[2]!.title} className="min-h-0 w-full flex-1 rounded-xl bg-muted object-contain" />
+          <button type="button" className={`${clickable} min-h-0 w-full flex-1`} onClick={open("Facebook", [pg[2]!, cr[0]!, cr[1]!])}>
+            <img src={pg[2]!.src} alt={pg[2]!.title} className="h-full w-full object-contain" /><Cue />
+          </button>
           <div className="text-[15px] text-muted-foreground">Сторінка для батьківської аудиторії</div>
         </div>
       </div>
@@ -372,6 +436,7 @@ function S6() {
         <Flow items={["Контент", "Користь", "Довіра", "Сайт"]} />
       </div>
     </Frame>
+    </>
   );
 }
 
