@@ -412,8 +412,8 @@ function S9() {
         <div className="flex flex-col gap-4">
           <div className={`rounded-3xl bg-hero p-6 text-center text-night-foreground ${R}`} style={rise(3)}>
             <div className="text-sm font-bold tracking-wider text-cyan uppercase">Безкоштовний тест рівня</div>
-            <div className="mt-2 text-[76px] leading-none font-extrabold">34/45</div>
-            <div className="mt-1 text-5xl font-extrabold text-cyan">76%</div>
+            <div className="mt-2 text-[64px] leading-none font-extrabold">34/45</div>
+            <div className="mt-1 text-4xl font-extrabold text-cyan">76%</div>
           </div>
           {groups.map(({ t, I, cls, items }, i) => (
             <Box key={t} i={i + 2} className="p-4">
