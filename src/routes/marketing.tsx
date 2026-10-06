@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles } from "lucide-react";
+import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import report1 from "@/assets/creatives/report1.png.asset.json";
-import report2 from "@/assets/creatives/report2.png.asset.json";
 
 export const Route = createFileRoute("/marketing")({
   head: () => ({
@@ -50,20 +49,53 @@ function Scaled({ children }: { children: ReactNode }) {
   );
 }
 
+const SITE = "https://neuromath-academydg.vercel.app/";
+const STAGES = [
+  ["RESEARCH", "ДОСЛІДЖЕННЯ", 2, "Ринок · Конкуренти · Аудиторія"],
+  ["STRATEGY", "СТРАТЕГІЯ", 4, "Позиціонування · Цінність"],
+  ["PROMOTION", "ПРОСУВАННЯ", 5, "Google · Meta · Social · SEO"],
+  ["CUSTOMER JOURNEY", "ШЛЯХ КЛІЄНТА", 8, "Тест · Email · PDF · Пробний урок"],
+  ["ANALYTICS", "АНАЛІТИКА", 10, "KPI-дерево · План / факт"],
+  ["LAUNCH", "ЗАПУСК", 11, "0–3 міс · перші фактичні дані"],
+  ["SCALING", "МАСШТАБУВАННЯ", 11, "6–12 міс · лише перевірене"],
+] as const;
+const stageOf = (n: number) => (n <= 3 ? 0 : n === 4 ? 1 : n <= 7 ? 2 : n <= 9 ? 3 : n === 10 ? 4 : n === 11 ? 5 : 6);
+const GoCtx = createContext<(n: number) => void>(() => {});
+const TITLES = ["Запуск бренду", "Дослідження", "Цільова аудиторія", "Стратегія", "Канали", "Social Media", "Paid Media", "Шлях клієнта", "Прогрів ліда", "KPI", "Roadmap", "Готова система"];
+
+function StageNav({ n }: { n: number }) {
+  const go = useContext(GoCtx);
+  const a = stageOf(n);
+  return (
+    <nav className="flex min-w-0 flex-1 items-center gap-1">
+      {STAGES.map(([en, ua, t], k) => {
+        const st = k < a ? "done" : k === a ? "active" : "future";
+        return (
+          <Fragment key={en}>
+            {k > 0 && <span className={`h-0.5 min-w-2 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
+            <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1.5 py-1 text-[11px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
+              <span className={`grid size-[18px] place-items-center rounded-full text-[9px] font-bold ${st === "active" ? "bg-brand text-primary-foreground ring-4 ring-primary/15" : st === "done" ? "bg-primary/15 text-primary" : "border bg-card"}`}>{st === "done" ? <Check className="size-3" /> : String(k + 1).padStart(2, "0")}</span>
+              {en} / {ua}
+            </button>
+          </Fragment>
+        );
+      })}
+    </nav>
+  );
+}
+
 function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: string; title: ReactNode; sub?: string; badge?: ReactNode; children: ReactNode }) {
   return (
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
-      <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="grid size-9 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
-          <span className="text-lg font-bold">Neuro<span className="text-brand">Math</span></span>
-        </div>
-        <span className="text-sm font-medium text-muted-foreground">{String(n).padStart(2, "0")} / 12 · {kicker}</span>
+      <div className="relative -mx-6 -mt-6 flex items-center gap-4">
+        <div className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
+        <StageNav n={n} />
+        <span className="shrink-0 text-sm font-bold text-muted-foreground">{String(n).padStart(2, "0")} / 12</span>
       </div>
-      <div className="relative mt-8">
-        {badge && <div className="mb-3">{badge}</div>}
+      <div className="relative mt-7">
+        <div className="mb-2 flex items-center gap-3"><span className="text-sm font-bold tracking-[0.14em] text-primary uppercase">{kicker}</span>{badge}</div>
         <h2 className={`max-w-[1200px] text-[52px] leading-[1.05] font-extrabold tracking-tight ${R}`}>{title}</h2>
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
@@ -93,24 +125,25 @@ const Flow = ({ items, className = "" }: { items: string[]; className?: string }
 
 function Browser({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border bg-card shadow-glow ${className}`}>
+    <a href={SITE} target="_blank" rel="noopener noreferrer" className={`group/br relative block overflow-hidden rounded-2xl border bg-card shadow-glow transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 ${className}`}>
+      <span className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-primary/0 opacity-0 transition duration-300 group-hover/br:bg-primary/10 group-hover/br:opacity-100"><span className="inline-flex items-center gap-2 rounded-full bg-card px-5 py-2.5 text-lg font-bold text-primary shadow-glow">Відкрити сайт NeuroMath <ExternalLink className="size-4" /></span></span>
       <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-destructive/60" /><span className="size-2.5 rounded-full bg-spark/70" /><span className="size-2.5 rounded-full bg-teal/60" />
         <span className="ml-3 rounded-md bg-card px-3 py-0.5 text-xs text-muted-foreground">neuromath-academydg.vercel.app</span>
       </div>
       <img src={src} alt={alt} className="block w-full" />
-    </div>
+    </a>
   );
 }
 
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const [v, setV] = useState(0);
+  const [v, setV] = useState(to);
   useEffect(() => {
     let raf = 0;
     const t0 = performance.now();
     const tick = (t: number) => {
       const p = Math.min(1, (t - t0) / 1200);
-      setV(Math.round(to * (1 - Math.pow(1 - p, 3))));
+      setV(Math.round(to * (0.6 + 0.4 * (1 - Math.pow(1 - p, 3)))));
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
@@ -130,23 +163,24 @@ const Img = ({ src, alt, label, i = 0, className = "", fit = "contain" }: { src:
 );
 
 function S1() {
-  const chips = ["Дослідження", "Стратегія", "Digital", "Конверсія", "Аналітика"];
+  const go = useContext(GoCtx);
   return (
     <Frame n={1} kicker="Запуск бренду" badge={<Badge>Новий проєкт · підготовка до запуску</Badge>} title={<>Запуск нового бренду <span className="text-brand">NeuroMath Academy</span></>} sub="Від маркетингового дослідження до системи залучення перших клієнтів">
-      <div className="grid h-full grid-cols-[300px_1fr] gap-10">
-        <div className="flex flex-col justify-between">
-          <div className="flex flex-col gap-3">
-            {chips.map((c, i) => (
-              <div key={c} className={`flex items-center gap-3 rounded-2xl border bg-card px-5 py-3.5 shadow-card ${R}`} style={rise(i + 3)}>
-                <span className="grid size-8 place-items-center rounded-full bg-brand text-sm font-bold text-primary-foreground">{i + 1}</span>
-                <span className="text-lg font-semibold">{c}</span>
-              </div>
-            ))}
-          </div>
+      <div className="grid h-full grid-cols-[330px_1fr] gap-10">
+        <div className="flex flex-col gap-2.5">
+          {STAGES.map(([en, ua, t], i) => (
+            <button key={en} onClick={() => go(t)} className={`flex items-center gap-3 rounded-2xl border bg-card px-4 py-2.5 text-left shadow-card transition hover:-translate-y-0.5 hover:border-primary/50 hover:bg-accent ${R}`} style={rise(i + 3)}>
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-sm font-bold text-primary-foreground">0{i + 1}</span>
+              <span className="text-[16px] leading-tight font-semibold"><span className="block text-[13px] font-bold tracking-wider text-primary">{en}</span>{ua.charAt(0) + ua.slice(1).toLowerCase()}</span>
+            </button>
+          ))}
         </div>
-        <div className={`flex min-h-0 flex-col gap-5 ${R}`} style={rise(3)}>
+        <div className={`flex min-h-0 flex-col gap-4 ${R}`} style={rise(3)}>
           <Browser src={siteShot.url} alt="Актуальний сайт NeuroMath Academy" className="min-h-0" />
-          <Flow className="justify-center" items={["Дослідження", "Стратегія", "Запуск"]} />
+          <div className="flex items-center justify-between">
+            <a href={SITE} target="_blank" rel="noopener noreferrer" className="text-[16px] font-semibold text-primary hover:underline">neuromath-academydg.vercel.app</a>
+            <a href={SITE} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-card px-5 py-2 text-[16px] font-bold text-primary shadow-card transition duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-accent">Відкрити сайт <ExternalLink className="size-4" /></a>
+          </div>
         </div>
       </div>
     </Frame>
@@ -162,7 +196,7 @@ function S2() {
   const facts = [["Попит", "Сформований / стабільний"], ["Конкуренція", "Висока"], ["Пріоритет запуску", "10–11 класи / НМТ"], ["Наступне масштабування", "5–9 класи"]];
   const comp = ["Mathema", "BUKI", "SuperProf", "Ispyt", "Math Corporation"];
   return (
-    <Frame n={2} kicker="Дослідження ринку" title="Що показало маркетингове дослідження?">
+    <Frame n={2} kicker="RESEARCH / ДОСЛІДЖЕННЯ" title="Що показало маркетингове дослідження?">
       <div className="grid h-full grid-cols-[1.55fr_1fr] gap-6">
         <div className="flex flex-col gap-5">
           <div className="grid grid-cols-3 gap-4">
@@ -186,7 +220,7 @@ function S2() {
           </Box>
         </div>
         <div className={`flex flex-col justify-center rounded-3xl bg-hero p-10 text-night-foreground ${R}`} style={rise(6)}>
-          <Badge>Головний висновок</Badge>
+          <span className="self-start"><Badge>Головний висновок</Badge></span>
           <p className="mt-6 text-[44px] leading-tight font-extrabold">Не конкурувати ціною.</p>
           <p className="mt-4 text-[28px] leading-snug font-semibold text-cyan">Конкурувати результатом, персоналізацією, методикою та довірою.</p>
         </div>
@@ -204,7 +238,7 @@ function S3() {
     <div className="flex flex-wrap items-center gap-1.5">{items.map((x, i) => <span key={x} className="flex items-center gap-1.5"><span className={`rounded-lg px-3 py-1 text-[15px] font-medium ${tone}`}>{x}</span>{i < items.length - 1 && <ChevronRight className="size-4 text-muted-foreground" />}</span>)}</div>
   );
   return (
-    <Frame n={3} kicker="Цільова аудиторія" title="Кого залучаємо і яку проблему вирішуємо?">
+    <Frame n={3} kicker="TARGET AUDIENCE / ЦІЛЬОВА АУДИТОРІЯ" title="Кого залучаємо і яку проблему вирішуємо?">
       <div className="grid h-full grid-cols-[1fr_1fr_0.8fr] gap-6">
         {segs.map((g, i) => (
           <Box key={g.t} i={i} className="flex flex-col gap-4 p-7">
@@ -229,7 +263,7 @@ function S3() {
 function S4() {
   const principles = ["Персоналізація", "Практика та робота над помилками", "Видимий прогрес", "AI-інструменти та цифрова підтримка"];
   return (
-    <Frame n={4} kicker="Позиціонування та стратегія" title="Як дослідження перетворилося на стратегію">
+    <Frame n={4} kicker="STRATEGY / СТРАТЕГІЯ" title="Як дослідження перетворилося на стратегію">
       <div className="flex h-full flex-col gap-6">
         <Flow items={["Проблема", "Інсайт", "Позиціонування", "Маркетингове рішення"]} />
         <div className="grid flex-1 grid-cols-[1.2fr_1fr] gap-6">
@@ -273,7 +307,7 @@ function S5() {
   ];
   const line = [["Впізнаваність", "Meta · Instagram · TikTok"], ["Інтерес", "Google · SEO · Facebook"], ["Лід", "Тест рівня"], ["Прогрів", "Email / SendPulse"], ["Пробний урок", "Сайт · Email"], ["Покупка", "Консультація"]];
   return (
-    <Frame n={5} kicker="Стратегія каналів" title="Як бренд буде виходити на ринок?" sub="Кожен канал має одну чітку роль у воронці.">
+    <Frame n={5} kicker="PROMOTION / ПРОСУВАННЯ" title="Як бренд буде виходити на ринок?" sub="Кожен канал має одну чітку роль у воронці.">
       <div className="flex h-full flex-col gap-6">
         <div className="grid flex-1 grid-cols-3 gap-4">
           {ch.map(([n, r], i) => (
@@ -302,7 +336,7 @@ function S6() {
   const cr = D.creatives;
   const pillars = ["Навчальний контент", "НМТ", "Методика / експертність", "Конверсійний контент"];
   return (
-    <Frame n={6} kicker="Social Media" badge={<Badge tone="warn">Концепція · канали ще не запущені</Badge>} title="Як NeuroMath буде виглядати в Social Media">
+    <Frame n={6} kicker="PROMOTION / SOCIAL MEDIA" badge={<Badge tone="warn">Концепція · канали ще не запущені</Badge>} title="Як NeuroMath буде виглядати в Social Media">
       <div className="grid h-[calc(100%-64px)] grid-cols-[1.35fr_1fr_1fr] gap-5">
         <div className={`flex min-h-0 flex-col gap-3 rounded-3xl border bg-card p-4 shadow-card ${R}`} style={rise(2)}>
           <div className="text-lg font-bold">Instagram</div>
@@ -338,7 +372,7 @@ function S7() {
   const cr = D.creatives;
   const Steps = ({ items }: { items: string[] }) => <Flow items={items} />;
   return (
-    <Frame n={7} kicker="Paid Media" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
+    <Frame n={7} kicker="PROMOTION / PAID MEDIA" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
       <div className="grid h-full grid-cols-2 gap-6">
         <div className="flex min-h-0 flex-col gap-4">
           <div className="text-2xl font-extrabold">Google Search · <span className="text-primary">перехоплення попиту</span></div>
@@ -359,37 +393,43 @@ function S7() {
 }
 
 function S8() {
-  const st = ["Трафік", "Сайт", "Тест рівня", "Лід", "Діагностика", "Пробний урок", "Оплата", "Навчання", "Результат", "Повтор / рекомендація"];
-  const beh = ["Побачив", "Перейшов", "Пройшов тест", "Залишив контакт", "Записався", "Відвідав", "Оплатив", "Навчається", "Отримує результат", "Рекомендує"];
-  const layers = [
-    ["Залучення", "Google Ads · Meta Ads · SEO", 0, 3],
-    ["Довіра / впізнаваність", "Instagram · TikTok · Facebook", 0, 4],
-    ["Прогрів / утримання", "Email · ремаркетинг · реферальна програма", 4, 10],
-  ] as const;
+  const phases = [
+    { en: "ACQUISITION", ua: "Залучення", st: ["Трафік", "Сайт"], ch: ["Google Ads", "Meta Ads", "SEO", "Instagram", "TikTok", "Facebook"], h: 340, o: 0.62 },
+    { en: "CONVERSION", ua: "Конверсія", st: ["Тест рівня", "Лід", "Діагностика", "Пробний урок"], ch: ["Website", "Test", "Email", "Remarketing"], h: 295, o: 0.8 },
+    { en: "PURCHASE", ua: "Покупка", st: ["Оплата", "Навчання"], ch: [], h: 250, o: 1 },
+  ];
+  const beh = ["Побачив", "Перейшов", "Пройшов тест", "Залишив контакт", "Записався", "Відвідав", "Оплатив", "Навчається", "Отримав результат", "Рекомендує"];
+  const arrow = "polygon(0 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%, 22px 50%)";
   return (
-    <Frame n={8} kicker="Шлях клієнта" title="Як користувач перетворюється на клієнта" sub="Від першого контакту — до результату та рекомендації.">
-      <div className="flex h-full flex-col justify-center gap-6">
-        <div className="relative grid grid-cols-10 gap-2">
-          <div className="absolute top-1/2 right-6 left-6 h-1 -translate-y-1/2 rounded-full bg-brand opacity-30" />
-          {st.map((s, i) => (
-            <div key={s} className={`relative flex h-[120px] flex-col justify-between rounded-2xl bg-brand p-3 text-primary-foreground shadow-glow ${R}`} style={{ ...rise(i), opacity: 1 }}>
-              <span className="text-sm font-bold opacity-75">{String(i + 1).padStart(2, "0")}</span>
-              <span className="text-[17px] leading-tight font-bold">{s}</span>
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-10 gap-2">
-          {beh.map((b, i) => <div key={b} className={`rounded-xl border bg-card p-2.5 text-center text-[15px] font-medium ${R}`} style={rise(i + 2)}>{b}</div>)}
-        </div>
-        <div className="flex flex-col gap-2">
-          {layers.map(([n, c, a, b], i) => (
-            <div key={n} className="grid grid-cols-10 gap-2">
-              <div className={`flex items-center justify-between rounded-xl bg-accent px-4 py-2.5 ${R}`} style={{ gridColumn: `${a + 1} / ${b + 1}`, ...rise(i + 10) }}>
-                <span className="text-[15px] font-bold tracking-wider text-accent-foreground uppercase">{n}</span>
-                <span className="text-[15px] font-medium">{c}</span>
+    <Frame n={8} kicker="CUSTOMER JOURNEY / ШЛЯХ КЛІЄНТА" title="Як користувач перетворюється на клієнта">
+      <div className="flex h-full flex-col gap-4">
+        <div className="grid grid-cols-[2.2fr_3.6fr_2fr_2.4fr] gap-x-1">
+          <div className="col-span-3 mb-2 flex items-center gap-3 text-[14px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/30" /></div>
+          <div className="mb-2 flex items-center gap-3 pl-4 text-[14px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/30" /></div>
+          {phases.map((p, i) => (
+            <div key={p.en} className={`flex h-[340px] items-center ${R}`} style={rise(i * 2 + 2)}>
+              <div className="flex w-full flex-col justify-center gap-3 bg-brand py-4 pr-10 pl-9 text-primary-foreground" style={{ height: p.h, clipPath: arrow, opacity: p.o }}>
+                <div className="text-[14px] font-bold tracking-wider opacity-80">{String(i + 1).padStart(2, "0")} · {p.en} / {p.ua.toUpperCase()}</div>
+                <div className="flex flex-wrap items-center gap-1.5">{p.st.map((s, k) => <span key={s} className="flex items-center gap-1.5"><span className="rounded-lg bg-primary-foreground/20 px-3 py-2 text-[20px] font-bold">{s}</span>{k < p.st.length - 1 && <ChevronRight className="size-4" />}</span>)}</div>
               </div>
             </div>
           ))}
+          <div className={`ml-3 flex h-[340px] items-center ${R}`} style={rise(8)}>
+            <div className="relative flex h-[260px] w-full flex-col justify-center gap-3 rounded-[28px] border-2 border-dashed border-teal/50 bg-card p-5">
+              <RefreshCw className="absolute top-4 right-4 size-6 text-teal" />
+              <div className="text-[14px] font-bold tracking-wider text-teal">04 · RETENTION / УТРИМАННЯ</div>
+              <div className="flex flex-wrap items-center gap-1.5"><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Результат</span><ChevronRight className="size-4 text-teal" /><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Повтор / рекомендація ↺</span></div>
+            </div>
+          </div>
+          {[...phases.map((p) => p.ch), ["Email", "Learning", "Referral"]].map((c, i) => (
+            <div key={i} className={`mt-3 flex flex-wrap content-start gap-1.5 pr-6 ${i === 3 ? "pl-4" : ""} ${R}`} style={rise(i + 9)}>
+              {c.map((x) => <span key={x} className="rounded-full border bg-card px-3 py-1 text-[14px] font-semibold">{x}</span>)}
+            </div>
+          ))}
+        </div>
+        <div className="mt-8 rounded-2xl border bg-card/70 px-5 py-3">
+          <div className="mb-2 text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Дії користувача</div>
+          <div className="flex flex-wrap items-center gap-1.5">{beh.map((b, i) => <span key={b} className={`flex items-center gap-1.5 ${R}`} style={rise(i + 12)}><span className="text-[16px] font-medium">{b}</span>{i < beh.length - 1 && <ChevronRight className="size-4 text-primary" />}</span>)}</div>
         </div>
       </div>
     </Frame>
@@ -403,28 +443,38 @@ function S9() {
     { t: "Повторити", I: AlertCircle, cls: "text-destructive", items: "Стереометрія · Тригонометрія" },
   ];
   return (
-    <Frame n={9} kicker="Прогрів ліда" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
-      <div className="grid h-[calc(100%-84px)] grid-cols-[35fr_30fr_35fr] gap-6">
+    <Frame n={9} kicker="LEAD NURTURING / ПРОГРІВ ЛІДА" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
+      <div className="grid h-[calc(100%-64px)] grid-cols-[35fr_28fr_35fr] gap-6">
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><Mail className="size-4 text-primary" /> Персональний звіт · результат тесту</div>
-          <img src={report1.url} alt="Персональний звіт NeuroMath, сторінка 1" className="min-h-0 w-full flex-1 object-cover object-top" />
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><Mail className="size-4 text-primary" /> 01 · EMAIL · SendPulse</div>
+          <div className="flex min-h-0 flex-1 flex-col gap-3 p-5">
+            <div className="space-y-1 border-b pb-3 text-[14px] text-muted-foreground">
+              <div><b className="text-foreground">Від:</b> NeuroMath Academy</div>
+              <div><b className="text-foreground">Тема:</b> Ваш результат тесту рівня — 34/45</div>
+            </div>
+            <div className="flex items-center gap-2"><div className="grid size-8 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div><span className="text-lg font-bold">Neuro<span className="text-brand">Math</span></span></div>
+            <p className="text-[16px] leading-snug">Вітаємо! Ви пройшли безкоштовний тест рівня з математики. Ваш результат — <b>34 з 45 (76%)</b>.</p>
+            <p className="text-[16px] leading-snug text-muted-foreground">У вкладенні — персональний звіт із сильними темами та планом підготовки до НМТ.</p>
+            <div className="flex items-center gap-2 rounded-xl border bg-muted px-3 py-2 text-[14px] font-semibold"><Paperclip className="size-4 text-primary" />Персональний_звіт_NeuroMath.pdf</div>
+            <span className="mt-auto self-start rounded-full bg-brand px-5 py-2.5 text-[16px] font-bold text-primary-foreground">Записатися на пробний урок</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className={`rounded-3xl bg-hero p-6 text-center text-night-foreground ${R}`} style={rise(3)}>
-            <div className="text-sm font-bold tracking-wider text-cyan uppercase">Безкоштовний тест рівня</div>
-            <div className="mt-2 text-[64px] leading-none font-extrabold">34/45</div>
+        <div className="flex flex-col gap-3">
+          <div className={`rounded-3xl bg-hero p-5 text-center text-night-foreground ${R}`} style={rise(3)}>
+            <div className="text-sm font-bold tracking-wider text-cyan uppercase">02 · RESULT / РЕЗУЛЬТАТ</div>
+            <div className="mt-2 text-[60px] leading-none font-extrabold">34/45</div>
             <div className="mt-1 text-4xl font-extrabold text-cyan">76%</div>
           </div>
           {groups.map(({ t, I, cls, items }, i) => (
             <Box key={t} i={i + 2} className="p-4">
               <div className={`flex items-center gap-2 text-[15px] font-bold uppercase ${cls}`}><I className="size-5" />{t}</div>
-              <div className="mt-1 text-lg font-medium">{items}</div>
+              <div className="mt-1 text-[17px] font-medium">{items}</div>
             </Box>
           ))}
         </div>
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(4)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> Персональний PDF · план підготовки</div>
-          <img src={report2.url} alt="Персональний звіт NeuroMath, сторінка 2" className="min-h-0 w-full flex-1 object-cover object-top" />
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> 03 · PDF · персональний звіт</div>
+          <img src={report1.url} alt="Персональний PDF-звіт NeuroMath" className="min-h-0 w-full flex-1 object-cover object-top" />
         </div>
       </div>
       <Flow className="absolute right-0 bottom-0 left-0 justify-center" items={["Тест", "Результат", "Email", "PDF", "Пробний урок", "Покупка"]} />
@@ -434,50 +484,46 @@ function S9() {
 
 function S10() {
   const tree = [
-    ["Впізнаваність", "Reach · Impressions · CPM · Video Views"],
+    ["Впізнаваність", "Reach · Impressions · CPM"],
     ["Трафік", "Sessions · CTR · CPC"],
-    ["Лід", "Test Completions · Leads · CPL"],
+    ["Лід", "Tests · Leads · CPL"],
     ["Пробний урок", "Bookings · Attendance · Cost per Trial"],
-    ["Перша покупка", "New Students · Conversion · CAC · Revenue"],
-    ["Утримання", "Retention · Repeat · Referral"],
+    ["Покупка", "New Students · Conversion · CAC"],
+    ["Утримання", "Retention · Referral"],
   ];
   const m = D.conversionModel;
   const v = m.visitors;
   const trial = Math.round(v * m.trialRate);
   const att = Math.round(trial * m.attendanceRate);
   const paid = Math.round(att * m.paymentRate);
+  const fun = [[v, "Відвідувачів"], [trial, "Записів"], [att, "Відвідали пробний урок"], [paid, "Покупок"]] as const;
   return (
-    <Frame n={10} kicker="Прогноз і KPI" badge={<Badge tone="warn">Прогноз · не фактичні результати</Badge>} title="Як будемо вимірювати ефективність після запуску">
-      <div className="grid h-full grid-cols-[1.2fr_1fr] gap-6">
-        <div className="flex flex-col-reverse justify-end gap-2.5">
+    <Frame n={10} kicker="ANALYTICS / АНАЛІТИКА" badge={<Badge tone="warn">FORECAST / ПРОГНОЗ · не фактичні результати</Badge>} title="Як будемо вимірювати ефективність після запуску">
+      <div className="grid h-full grid-cols-[1.1fr_1fr] gap-8">
+        <div className="flex flex-col gap-2.5">
+          <div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">KPI TREE / KPI-дерево</div>
           {tree.map(([n, k], i) => (
-            <div key={n} className={`grid grid-cols-[210px_1fr] items-center gap-4 rounded-2xl border bg-card px-5 py-3.5 shadow-card ${R}`} style={rise(i + 1)}>
+            <div key={n} className={`grid grid-cols-[200px_1fr] items-center gap-4 rounded-2xl border bg-card px-5 py-3.5 shadow-card ${R}`} style={rise(i + 1)}>
               <span className="text-lg font-bold"><span className="mr-2 text-primary">{i + 1}</span>{n}</span>
-              <span className="text-[17px] text-muted-foreground">{k}</span>
+              <span className="text-[17px] text-muted-foreground">→ {k}</span>
             </div>
           ))}
-          <div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">KPI-дерево · знизу вгору</div>
+          <div className={`mt-auto grid grid-cols-2 gap-4 rounded-2xl border bg-card p-4 ${R}`} style={rise(8)}>
+            <div><div className="text-sm font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="mt-1 text-[16px] font-semibold">Прогнозна KPI-модель</div></div>
+            <div><div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="mt-1 text-[16px] font-semibold text-muted-foreground">— після запуску</div></div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <Box i={3} className="p-6">
-            <div className="flex items-center justify-between"><span className="text-xl font-bold">Сценарна воронка</span><Badge>Сценарна модель</Badge></div>
-            <div className="mt-4 grid grid-cols-4 gap-2 text-center">
-              {[[v, "відвідувачів"], [trial, "записів"], [att, "відвідали урок"], [paid, "покупок"]].map(([n, l]) => (
-                <div key={l} className="rounded-xl bg-muted p-3"><div className="text-[34px] font-extrabold text-brand">{n}</div><div className="text-[15px] text-muted-foreground">{l}</div></div>
-              ))}
-            </div>
-            <p className="mt-4 text-[15px] text-muted-foreground">Початкові припущення. Конверсії будуть перевірені та скориговані після запуску.</p>
-          </Box>
-          <Box i={4} className="p-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div><div className="text-sm font-bold tracking-wider text-primary uppercase">План</div><div className="mt-2 text-lg font-semibold">Прогнозна KPI-модель</div></div>
-              <div><div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">Факт</div><div className="mt-2 text-lg font-semibold text-muted-foreground">Дані будуть доступні після запуску</div></div>
-            </div>
-          </Box>
-          <Box i={5} className="flex-1 p-6">
-            <div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">Вартість на кожному етапі</div>
-            <div className="mt-3 flex flex-wrap gap-2">{["CPM", "CPC", "CPL", "Cost per Trial", "CAC"].map((c) => <span key={c} className="rounded-full bg-accent px-4 py-1.5 text-lg font-bold text-accent-foreground">{c}</span>)}</div>
-          </Box>
+        <div className="flex flex-col items-center">
+          <div className="text-sm font-bold tracking-[0.14em] text-primary uppercase">Ілюстративна сценарна модель</div>
+          <div className="mt-4 flex w-full flex-1 flex-col items-center gap-2">
+            {fun.map(([n, l], i) => (
+              <div key={l} className={`flex flex-1 items-center justify-center gap-4 rounded-2xl bg-brand text-primary-foreground shadow-glow ${R}`} style={{ width: `${100 - i * 15}%`, opacity: 0.6 + i * 0.13, ...rise(i * 2 + 3) }}>
+                <span className="text-[40px] leading-none font-extrabold">{n}</span>
+                <span className="text-[18px] font-semibold">{l}</span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 max-w-[560px] text-center text-[15px] text-muted-foreground">Початкові припущення для демонстрації логіки. Фактичні конверсії будуть визначені після запуску.</p>
         </div>
       </div>
     </Frame>
@@ -485,66 +531,60 @@ function S10() {
 }
 
 function S11() {
+  const [act, setAct] = useState<number | null>(null);
   const st = [
-    { m: "0–3 місяці", n: "Запуск", items: ["Google Ads та Meta Ads", "Запуск Social Media", "Базове SEO", "Перші ліди", "Тестування рекламних гіпотез", "Збір перших фактичних даних"], goal: "Перевірити попит і визначити перші ефективні канали залучення" },
-    { m: "3–6 місяців", n: "Оптимізація та довіра", items: ["План / факт", "Оптимізація CPL / CAC", "Ремаркетинг", "Кейси та відгуки", "Регулярний контент і SEO", "Оптимізація воронки"], goal: "Підвищити довіру та ефективність конверсії" },
-    { m: "6–12 місяців", n: "Масштабування", items: ["Масштабування ефективних каналів", "Розвиток напряму 5–9 класів", "Тематичні інтенсиви", "Реферальна програма", "Тестування нових сегментів"], goal: "Масштабувати лише те, що підтвердило ефективність фактичними даними" },
+    { m: "0–3 місяці", en: "LAUNCH", n: "Запуск", items: ["Google Ads", "Meta Ads", "Social Media", "Базове SEO", "Перші ліди", "Тестування гіпотез", "Перші фактичні дані"], goal: "Перевірити попит та визначити ефективні канали" },
+    { m: "3–6 місяців", en: "OPTIMIZATION", n: "Оптимізація", items: ["Plan vs Actual", "Аналіз CPL · CAC · Conversion", "Remarketing", "Кейси та відгуки", "Контент і SEO", "Оптимізація funnel"], goal: "Підвищити довіру та конверсію на основі фактичних даних" },
+    { m: "6–12 місяців", en: "SCALING", n: "Масштабування", items: ["Масштабування ефективних каналів", "Розширення на 5–9 класи", "Тематичні інтенсиви", "Referral program", "Нові сегменти"], goal: "Масштабувати лише те, що підтвердило ефективність фактичними даними" },
   ];
   return (
-    <Frame n={11} kicker="Дорожня карта" title="План запуску та масштабування" sub="12-місячний план переходу від запуску до масштабування">
-      <div className="flex h-full flex-col gap-5">
-        <div className="relative grid flex-1 grid-cols-3 gap-6">
-          <div className="absolute top-[26px] right-[16%] left-[16%] h-1 rounded-full bg-brand opacity-40" />
-          {st.map((s, i) => (
-            <div key={s.m} className={`relative flex flex-col ${R}`} style={rise(i * 3 + 2)}>
-              <div className="mx-auto grid h-[52px] place-items-center rounded-full bg-brand px-6 text-lg font-extrabold text-primary-foreground shadow-glow">{s.m}</div>
-              <div className="mt-4 flex flex-1 flex-col rounded-3xl border bg-card p-6 shadow-card">
-                <div className="text-[26px] font-extrabold">{s.n}</div>
+    <Frame n={11} kicker="ROADMAP / ДОРОЖНЯ КАРТА" title="План запуску та масштабування" sub="LAUNCH → OPTIMIZATION → SCALING: масштабування відбувається лише після підтвердження фактичними даними">
+      <div className="relative grid h-full grid-cols-3 gap-6">
+        {[0, 1].map((k) => (
+          <div key={k} className={`absolute top-[24px] h-1 rounded-full bg-brand transition-opacity duration-300 ${act !== null && (act === k || act === k + 1) ? "opacity-100" : "opacity-30"}`} style={{ left: `${16.6 + k * 33.3}%`, width: "33.3%" }} />
+        ))}
+        {st.map((s, i) => {
+          const on = act === i;
+          return (
+            <button key={s.m} onMouseEnter={() => setAct(i)} onMouseLeave={() => setAct(null)} onClick={() => setAct(i)} className={`relative flex flex-col text-left ${R}`} style={rise(i * 3 + 2)}>
+              <div className={`mx-auto grid h-[52px] place-items-center rounded-full bg-brand px-6 text-lg font-extrabold text-primary-foreground shadow-glow transition ${on ? "scale-105" : ""}`}>{s.m}</div>
+              <div className={`mt-4 flex w-full flex-1 flex-col rounded-3xl border-2 p-6 shadow-card transition duration-300 ${on ? "scale-[1.02] border-primary bg-accent/60" : "border-border bg-card"}`}>
+                <div className="text-[15px] font-bold tracking-wider text-primary">0{i + 1} · {s.en} / {s.n.toUpperCase()}</div>
+                <div className="mt-1 text-[26px] font-extrabold">{s.n}</div>
                 <ul className="mt-3 space-y-1.5 text-[17px]">{s.items.map((x) => <li key={x} className="flex gap-2"><Check className="mt-1 size-4 shrink-0 text-primary" />{x}</li>)}</ul>
-                <div className="mt-auto rounded-xl bg-accent p-3 text-[15px] font-semibold text-accent-foreground">Мета: {s.goal}</div>
+                <div className="mt-auto rounded-xl bg-accent p-3 text-[16px] font-semibold text-accent-foreground">Ціль: «{s.goal}»</div>
               </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex items-center justify-between">
-          <Flow items={["Запуск", "Вимірювання", "Оптимізація", "Довіра", "Масштабування"]} />
-          <span className="text-lg font-semibold text-primary">Від першого контакту — до довгострокових відносин із клієнтом</span>
-        </div>
+            </button>
+          );
+        })}
       </div>
     </Frame>
   );
 }
 
 function S12() {
-  const st = [
-    ["Дослідження", "Ринок · Конкуренти · Аудиторія"],
-    ["Стратегія", "Позиціонування · Продукт · Канали"],
-    ["Digital-присутність", "Сайт · Social Media · Ads"],
-    ["Залучення та прогрів", "Тест · Email · PDF"],
-    ["Конверсія", "Пробний урок · Оплата · Навчання"],
-    ["Зростання", "Результат · Утримання · Рекомендації · Аналітика · Оптимізація · Масштабування"],
-  ];
+  const go = useContext(GoCtx);
   return (
-    <Frame n={12} kicker="Готова система" title="Від дослідження до готової системи запуску">
-      <div className="flex h-[calc(100%-56px)] flex-col gap-6">
-        <div className="relative grid grid-cols-6 gap-4">
-          <svg className="pointer-events-none absolute inset-x-0 top-[38px] h-2 w-full" preserveAspectRatio="none" viewBox="0 0 100 2"><line x1="4" y1="1" x2="96" y2="1" stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="2" className="draw-line" vectorEffect="non-scaling-stroke" /></svg>
-          {st.map(([n, d], i) => (
-            <div key={n} className={`relative flex flex-col items-center text-center ${R}`} style={rise(i + 1)}>
-              <div className="grid size-[76px] place-items-center rounded-full bg-brand text-2xl font-extrabold text-primary-foreground shadow-glow">0{i + 1}</div>
-              <div className="mt-4 w-full flex-1 rounded-3xl border bg-card p-5 shadow-card">
-                <div className="text-xl font-extrabold">{n}</div>
-                <div className="mt-2 text-[16px] leading-snug text-muted-foreground">{d}</div>
+    <Frame n={12} kicker="SCALING / ГОТОВА СИСТЕМА" title="Від дослідження до готової системи запуску">
+      <div className="flex h-full flex-col gap-6">
+        <div className="relative grid grid-cols-7 gap-3">
+          <svg className="pointer-events-none absolute inset-x-0 top-[34px] h-2 w-full" preserveAspectRatio="none" viewBox="0 0 100 2"><line x1="6" y1="1" x2="94" y2="1" stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="2" className="draw-line" vectorEffect="non-scaling-stroke" /></svg>
+          {STAGES.map(([en, ua, t, d], i) => (
+            <button key={en} onClick={() => go(t)} className={`group/s relative flex flex-col items-center text-center ${R}`} style={rise(i + 1)}>
+              <div className="grid size-[68px] place-items-center rounded-full bg-brand text-xl font-extrabold text-primary-foreground shadow-glow ring-primary/20 transition group-hover/s:scale-110 group-hover/s:ring-8">0{i + 1}</div>
+              <div className="mt-4 w-full flex-1 rounded-3xl border-2 border-border bg-card p-4 shadow-card transition duration-300 group-hover/s:scale-[1.03] group-hover/s:border-primary group-hover/s:bg-accent/60">
+                <div className="text-[15px] font-extrabold tracking-wide text-primary">{en}</div>
+                <div className="text-[17px] font-bold">{ua.charAt(0) + ua.slice(1).toLowerCase()}</div>
+                <div className="mt-2 text-[15px] leading-snug text-muted-foreground">{d}</div>
               </div>
-            </div>
+            </button>
           ))}
         </div>
-        <div className={`flex flex-1 items-center gap-6 rounded-3xl bg-hero px-10 text-night-foreground ${R}`} style={rise(8)}>
+        <div className={`flex items-center gap-6 flex-1 rounded-3xl bg-hero px-10 text-night-foreground ${R}`} style={rise(9)}>
           <Sparkles className="size-10 shrink-0 text-cyan" />
-          <p className="text-[30px] leading-snug font-bold">NeuroMath Academy переходить від ідеї нового бренду до керованої digital-системи залучення, конверсії та масштабування.</p>
+          <p className="text-[30px] leading-snug font-bold">NeuroMath Academy переходить від ідеї нового бренду до керованої системи запуску, вимірювання та — після підтвердження даними — масштабування.</p>
         </div>
       </div>
-      <Flow className="absolute right-0 bottom-0 left-0 justify-center" items={["Впізнаваність", "Інтерес", "Лід", "Пробний урок", "Покупка", "Результат", "Рекомендація"]} />
     </Frame>
   );
 }
@@ -583,19 +623,25 @@ function Appendix() {
 /* ---------- deck shell ---------- */
 function Deck() {
   const [pres, setPres] = useState(false);
+  const [ov, setOv] = useState(false);
   const [i, setI] = useState(0);
-  const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(SLIDES.length - 1, x + d))), []);
+  const N = SLIDES.length;
+  const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(N - 1, x + d))), [N]);
+  const to = useCallback((n: number) => setI(Math.max(0, Math.min(N - 1, n))), [N]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!pres) return;
+      if (e.key === "Escape") { if (ov) setOv(false); else exit(); return; }
+      if (ov) return;
       if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(1); }
       if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1); }
-      if (e.key === "Escape") setPres(false);
+      if (e.key === "Home") { e.preventDefault(); to(0); }
+      if (e.key === "End") { e.preventDefault(); to(N - 1); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pres, go]);
+  });
 
   const enter = (n = 0) => {
     setI(n);
@@ -604,27 +650,54 @@ function Deck() {
   };
   const exit = () => {
     setPres(false);
+    setOv(false);
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   };
+  const toggleFs = () => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  };
+  const pill = "inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card/70 px-4 py-1.5 text-sm font-semibold text-foreground transition hover:border-primary/50 hover:bg-accent hover:text-primary disabled:opacity-35";
 
   if (pres) {
     const S = SLIDES[i]!;
     return (
-      <div className="fixed inset-0 z-50 flex flex-col bg-night">
-        <div className="h-1 bg-night-foreground/10"><div className="h-full bg-brand transition-all duration-500" style={{ width: `${((i + 1) / SLIDES.length) * 100}%` }} /></div>
-        <div className="min-h-0 flex-1 p-4"><Scaled><S key={i} /></Scaled></div>
-        <div className="flex items-center justify-center gap-4 pb-4 text-night-foreground">
-          <button onClick={() => go(-1)} disabled={i === 0} className="inline-flex items-center gap-1 rounded-full border border-night-foreground/20 px-4 py-1.5 text-sm disabled:opacity-30"><ChevronLeft className="size-4" />Назад</button>
-          <span className="w-14 text-center text-sm font-semibold">{i + 1} / {SLIDES.length}</span>
-          <button onClick={() => go(1)} disabled={i === SLIDES.length - 1} className="inline-flex items-center gap-1 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold disabled:opacity-30">Далі<ChevronRight className="size-4" /></button>
-          <button onClick={exit} className="ml-6 inline-flex items-center gap-1 rounded-full border border-night-foreground/20 px-3 py-1.5 text-sm"><Minimize2 className="size-4" />Вийти</button>
+      <GoCtx.Provider value={(n) => to(n - 1)}>
+        <div className="fixed inset-0 z-50 flex flex-col bg-muted">
+          <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled><S key={i} /></Scaled></div>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
+            <button onClick={() => go(-1)} disabled={i === 0} className={pill}><ChevronLeft className="size-4" />Попередній</button>
+            <div className="flex w-40 flex-col items-center gap-1">
+              <span className="text-sm font-bold text-primary">{String(i + 1).padStart(2, "0")} / {N}</span>
+              <div className="h-1 w-full rounded-full bg-primary/15"><div className="h-full rounded-full bg-brand transition-all duration-500" style={{ width: `${((i + 1) / N) * 100}%` }} /></div>
+            </div>
+            <button onClick={() => go(1)} disabled={i === N - 1} className="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-glow disabled:opacity-35">Далі<ChevronRight className="size-4" /></button>
+            <span className="mx-1 h-6 w-px bg-border" />
+            <button onClick={() => setOv(true)} className={pill}><LayoutGrid className="size-4" />Огляд</button>
+            <button onClick={toggleFs} className={pill}><Maximize2 className="size-4" />На весь екран</button>
+            <button onClick={exit} className={pill} aria-label="Вийти"><Minimize2 className="size-4" /></button>
+          </div>
+          {ov && (
+            <div className="absolute inset-0 z-10 grid place-items-center bg-night/40 backdrop-blur-sm" onClick={() => setOv(false)}>
+              <div className="w-[min(860px,92vw)] rounded-3xl border border-primary/20 bg-card p-6 shadow-glow" onClick={(e) => e.stopPropagation()}>
+                <div className="mb-4 flex items-center justify-between"><span className="text-lg font-extrabold">Огляд презентації</span><button onClick={() => setOv(false)} className={pill} aria-label="Закрити"><X className="size-4" /></button></div>
+                <div className="grid grid-cols-3 gap-2">
+                  {TITLES.map((t, k) => (
+                    <button key={t} onClick={() => { to(k); setOv(false); }} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition hover:border-primary/50 hover:bg-accent ${k === i ? "border-primary bg-accent text-primary" : ""}`}>
+                      <span className="text-lg font-extrabold text-brand">{String(k + 1).padStart(2, "0")}</span><span className="font-semibold">{t}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </GoCtx.Provider>
     );
   }
 
   return (
-    <div>
+    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}>
       <header className="ui-control sticky top-0 z-40 border-b glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-3">
@@ -639,13 +712,13 @@ function Deck() {
       </header>
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-10 print:max-w-none print:space-y-0 print:p-0">
         {SLIDES.map((S, n) => (
-          <div key={n} className="print-slide group relative aspect-video overflow-hidden rounded-3xl border shadow-card print:rounded-none print:border-0 print:shadow-none">
+          <div key={n} id={`slide-${n + 1}`} className="print-slide group relative aspect-video overflow-hidden rounded-3xl border shadow-card print:rounded-none print:border-0 print:shadow-none">
             <Scaled><S /></Scaled>
             <button onClick={() => enter(n)} className="ui-control absolute right-4 bottom-4 rounded-full bg-card/90 px-3 py-1.5 text-xs font-semibold opacity-0 shadow-card transition group-hover:opacity-100">Показати з цього слайда</button>
           </div>
         ))}
       </main>
       <Appendix />
-    </div>
+    </GoCtx.Provider>
   );
 }
