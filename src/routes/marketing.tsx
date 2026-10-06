@@ -338,8 +338,8 @@ function S5() {
 }
 
 type Shot = { src: string; title: string; tab?: string; info?: { head: string; rows: [string, string][] } };
-function SocialModal({ label, items, onClose }: { label: string; items: Shot[]; onClose: () => void }) {
-  const [i, setI] = useState(0);
+function SocialModal({ label, items, onClose, start = 0 }: { label: string; items: Shot[]; onClose: () => void; start?: number }) {
+  const [i, setI] = useState(start);
   const [dir, setDir] = useState(1);
   const n = items.length;
   const go = useCallback((d: number) => { setDir(d); setI((v) => (v + d + n) % n); }, [n]);
@@ -458,7 +458,7 @@ function S7() {
   const cue = (t: string) => <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[12px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">{t}</span>;
   return (
     <>
-    {m !== null && <SocialModal key={m} label="Paid Media · концепція" items={m === 0 ? items : [...items.slice(m), ...items.slice(0, m)]} onClose={() => setM(null)} />}
+    {m !== null && <SocialModal key={m} label="Paid Media · концепція" items={items} start={m} onClose={() => setM(null)} />}
     <Frame n={7} kicker="PROMOTION / PAID MEDIA" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
       <div className="grid h-full grid-cols-2 gap-6">
         <div className="flex min-h-0 flex-col gap-4">
