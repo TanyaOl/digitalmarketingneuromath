@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- The /marketing deck renders 9 slides on a fixed 1600x900 canvas scaled to fit (Scaled component); content numbers live in src/data/marketing.ts. Why: guarantees 16:9 slides without scroll in browser, fullscreen and PDF.

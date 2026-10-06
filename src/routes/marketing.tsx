@@ -366,7 +366,7 @@ function S7() {
     <Frame n={7} kicker="Прогрів ліда" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
       <div className="grid h-[calc(100%-70px)] grid-cols-[1fr_1.1fr_1fr] gap-6">
         <div className={`relative min-h-0 overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2 text-xs font-semibold"><Mail className="size-4 text-primary" /> Email · сторінка 1 звіту</div>
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2 text-xs font-semibold"><Mail className="size-4 text-primary" /> Лист із персональним звітом · с. 1</div>
           <img src={report1.url} alt="Персональний звіт NeuroMath, сторінка 1" className="w-full object-cover object-top" />
         </div>
         <div className="flex flex-col gap-4">
