@@ -93,7 +93,7 @@ function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: 
   return (
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/[0.06] blur-3xl" />
       <div className="relative -mt-6 -ml-6 -mr-16 flex items-center gap-4">
         <div className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
         <StageNav n={n} />
@@ -103,7 +103,7 @@ function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: 
       </div>
       <div className="relative mt-7">
         <div className="mb-2 flex items-center gap-3"><span className="text-sm font-bold tracking-[0.14em] text-primary uppercase">{kicker}</span>{badge}</div>
-        <h2 className={`max-w-[1200px] text-[52px] leading-[1.05] font-extrabold tracking-tight ${R}`}>{title}</h2>
+        <h2 className={`max-w-[1200px] font-display text-[48px] leading-[1.06] font-bold tracking-[-0.02em] ${R}`}>{title}</h2>
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
       <div className="relative mt-8 min-h-0 flex-1">{children}</div>
@@ -136,7 +136,7 @@ function Browser({ src, alt, className = "" }: { src: string; alt: string; class
       <span className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-primary/0 opacity-0 transition duration-300 group-hover/br:bg-primary/10 group-hover/br:opacity-100"><span className="inline-flex items-center gap-2 rounded-full bg-card px-5 py-2.5 text-lg font-bold text-primary shadow-glow">Відкрити сайт NeuroMath <ExternalLink className="size-4" /></span></span>
       <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-destructive/60" /><span className="size-2.5 rounded-full bg-spark/70" /><span className="size-2.5 rounded-full bg-teal/60" />
-        <span className="ml-3 rounded-md bg-card px-3 py-0.5 text-xs text-muted-foreground">neuromath-academydg.vercel.app</span>
+        <span className="ml-3 rounded-md bg-card px-3 py-0.5 text-sm text-muted-foreground">neuromath-academydg.vercel.app</span>
       </div>
       <img src={src} alt={alt} className="block w-full" />
     </a>
@@ -178,7 +178,7 @@ function S1() {
           {STAGES.map(([en, ua, t], i) => (
             <button key={en} onClick={() => go(t)} className={`flex items-center gap-3 rounded-2xl border bg-card px-4 py-2.5 text-left shadow-card transition hover:-translate-y-0.5 hover:border-primary/50 hover:bg-accent ${R}`} style={rise(i + 3)}>
               <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-sm font-bold text-primary-foreground">0{i + 1}</span>
-              <span className="text-[16px] leading-tight font-semibold"><span className="block text-[13px] font-bold tracking-wider text-primary">{en}</span>{ua.charAt(0) + ua.slice(1).toLowerCase()}</span>
+              <span className="text-[16px] leading-tight font-semibold"><span className="block text-[14px] font-bold tracking-wider text-primary">{en}</span>{ua.charAt(0) + ua.slice(1).toLowerCase()}</span>
             </button>
           ))}
         </div>
@@ -356,8 +356,8 @@ function SocialModal({ label, items, onClose, start = 0 }: { label: string; item
   }, [onClose, go, n]);
   const it = items[i]!;
   return createPortal(
-    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative flex max-h-[94vh] max-w-[94vw] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/60 p-6 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={onClose}>
+      <div className="relative flex max-h-[94vh] max-w-[94vw] flex-col overflow-hidden rounded-3xl border border-border/60 bg-card shadow-modal animate-in zoom-in-95 fade-in duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-3 border-b px-5 py-3 text-sm font-semibold">
           <span>{label}</span><span className="truncate font-normal text-muted-foreground">{it.title}</span>
           {n > 1 && !it.tab && <span className="tabular-nums text-primary">{i + 1} / {n}</span>}
@@ -374,11 +374,11 @@ function SocialModal({ label, items, onClose, start = 0 }: { label: string; item
           </>}
         </div>
         {it.info && <div className="border-t px-5 py-3 text-[14px] leading-[1.5]">
-          <div className="mb-1 text-[12px] font-bold tracking-wider text-primary">{it.info.head}</div>
+          <div className="mb-1 text-[14px] font-bold tracking-wider text-primary">{it.info.head}</div>
           <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-0.5">{it.info.rows.map(([k, v]) => <Fragment key={k}><span className="font-semibold text-muted-foreground">{k}</span><span>{v}</span></Fragment>)}</div>
         </div>}
         {n > 1 && items[0]!.tab && <div className="flex justify-center gap-2 border-t py-3">
-          {items.map((x, j) => <button key={j} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`rounded-full border px-4 py-1.5 text-[12px] font-bold tracking-wider transition-colors ${j === i ? "border-primary bg-primary text-primary-foreground" : "hover:bg-accent"}`}>{x.tab}</button>)}
+          {items.map((x, j) => <button key={j} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`rounded-full border px-4 py-1.5 text-[14px] font-bold tracking-wider transition-colors ${j === i ? "border-primary bg-primary text-primary-foreground" : "hover:bg-accent"}`}>{x.tab}</button>)}
         </div>}
         {n > 1 && !items[0]!.tab && <div className="flex justify-center gap-2 border-t py-3">
           {items.map((_, j) => <button key={j} aria-label={`Слайд ${j + 1}`} onClick={() => { setDir(j > i ? 1 : -1); setI(j); }} className={`size-2.5 rounded-full transition-colors ${j === i ? "bg-primary" : "bg-border hover:bg-primary/50"}`} />)}
@@ -389,9 +389,9 @@ function SocialModal({ label, items, onClose, start = 0 }: { label: string; item
   );
 }
 
-const clickable = "group relative cursor-pointer overflow-hidden rounded-xl bg-muted transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-2 hover:ring-primary/50";
+const clickable = "group relative cursor-pointer overflow-hidden rounded-xl bg-muted transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-1 hover:ring-primary/40";
 function Cue() {
-  return <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-card/90 px-2.5 py-1 text-[12px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">Переглянути ↗</span>;
+  return <span className="pointer-events-none absolute right-2 bottom-2 rounded-full bg-card/90 px-2.5 py-1 text-[14px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">Переглянути ↗</span>;
 }
 
 function S6() {
@@ -454,8 +454,8 @@ function S7() {
   const g: Shot = { src: cr[3]!.src, title: cr[3]!.title, tab: "GOOGLE SEARCH", info: { head: "GOOGLE SEARCH", rows: [["Роль", "Перехоплення сформованого попиту"], ["Мета", "Залучити користувачів, які вже активно шукають підготовку з математики / НМТ"], ["Етап Customer Journey", "ACQUISITION / ЗАЛУЧЕННЯ"], ["CTA / наступний крок", "Перехід на сайт → тест / пробний урок"]] } };
   const mi = { head: "META ADS", rows: [["Роль", "Формування попиту"], ["Мета", "Привернути увагу холодної аудиторії та сформувати інтерес до NeuroMath Academy"], ["Етап Customer Journey", "ACQUISITION / ЗАЛУЧЕННЯ"], ["Наступний крок", "Creative → сайт → тест / пробний урок"]] as [string, string][] };
   const items: Shot[] = [g, { src: cr[0]!.src, title: cr[0]!.title, tab: "META ADS · стрічка", info: mi }, { src: D.carousel[6]!.src, title: D.carousel[6]!.title, tab: "META ADS · пробний урок", info: mi }];
-  const btn = "group relative flex min-h-0 cursor-pointer flex-col rounded-2xl text-left transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-2 hover:ring-primary/50";
-  const cue = (t: string) => <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[12px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">{t}</span>;
+  const btn = "group relative flex min-h-0 cursor-pointer flex-col rounded-2xl text-left transition duration-200 hover:scale-[1.02] hover:shadow-glow hover:ring-1 hover:ring-primary/40";
+  const cue = (t: string) => <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-card/90 px-2.5 py-1 text-[14px] font-semibold text-primary shadow-card opacity-80 transition-opacity group-hover:opacity-100">{t}</span>;
   return (
     <>
     {m !== null && <SocialModal key={m} label="Paid Media · концепція" items={items} start={m} onClose={() => setM(null)} />}
@@ -511,12 +511,12 @@ function S8() {
     <Frame n={8} kicker="CUSTOMER JOURNEY / ШЛЯХ КЛІЄНТА" title="Як користувач перетворюється на клієнта">
       <div className="flex h-full flex-col">
         <div className="grid grid-cols-10 gap-x-3">
-          <div className="col-span-6 flex items-center gap-3 text-[13px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/25" /></div>
-          <div className="col-span-4 flex items-center gap-3 text-[13px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/25" /></div>
+          <div className="col-span-6 flex items-center gap-3 text-[14px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/25" /></div>
+          <div className="col-span-4 flex items-center gap-3 text-[14px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/25" /></div>
           {phases.map((p, i) => (
             <div key={p.l} className={`mt-3 border-t-2 pt-2 transition-colors ${ph === p ? "border-primary" : "border-primary/20"} ${R}`} style={{ gridColumn: `${p.s + 1} / ${p.e + 1}`, ...rise(i) }}>
               <div className={`text-[14px] font-bold tracking-wide ${ph === p ? "text-primary" : "text-primary/60"}`}>{p.l}</div>
-              <div className="mt-1.5 flex min-h-[26px] flex-wrap gap-1">{p.ch.map((c) => <span key={c} className="rounded-full bg-accent px-2.5 py-0.5 text-[13px] font-medium text-accent-foreground">{c}</span>)}</div>
+              <div className="mt-1.5 flex min-h-[26px] flex-wrap gap-1">{p.ch.map((c) => <span key={c} className="rounded-full bg-accent px-2.5 py-0.5 text-[14px] font-medium text-accent-foreground">{c}</span>)}</div>
             </div>
           ))}
         </div>
@@ -537,17 +537,17 @@ function S8() {
               <button key={n} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)} onClick={() => setSel(i)} className={`group/n relative flex flex-col items-center ${R}`} style={rise(i + 3)}>
                 <span className={`relative z-10 grid size-11 place-items-center rounded-full border-2 transition duration-300 ${on ? "border-primary bg-brand text-primary-foreground shadow-glow ring-4 ring-primary/15" : done ? "border-primary/40 bg-card text-primary" : "border-border bg-card text-muted-foreground"}`}><I className="size-5" /></span>
                 <span className={`mt-3 w-full rounded-2xl border-2 bg-card px-2 py-3 text-center text-[16px] leading-tight font-bold shadow-card transition duration-300 ${on ? "scale-105 border-primary text-primary" : "border-border text-foreground group-hover/n:border-primary/50"}`}>
-                  <span className="block text-[12px] font-semibold text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>{n}
+                  <span className="block text-[14px] font-semibold text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>{n}
                 </span>
               </button>
             );
           })}
         </div>
         <div key={a} className="mt-12 grid grid-cols-[1.1fr_1fr_1fr_1fr] items-center gap-6 rounded-3xl border border-primary/25 bg-accent/40 px-7 py-5 animate-in fade-in duration-300">
-          <div className="flex items-center gap-4"><span className="grid size-12 place-items-center rounded-2xl bg-brand text-primary-foreground"><cur.I className="size-6" /></span><div><div className="text-[13px] font-bold tracking-wider text-primary uppercase">{String(a + 1).padStart(2, "0")} · етап</div><div className="text-[22px] font-extrabold">{cur.n}</div></div></div>
-          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Дія користувача</div><div className="mt-1 text-[18px] font-semibold">«{cur.act}»</div></div>
-          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Touchpoint</div><div className="mt-1 text-[18px] font-semibold">{cur.tp}</div></div>
-          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Маркетингова мета</div><div className="mt-1 text-[18px] font-semibold text-primary">{cur.goal}</div></div>
+          <div className="flex items-center gap-4"><span className="grid size-12 place-items-center rounded-2xl bg-brand text-primary-foreground"><cur.I className="size-6" /></span><div><div className="text-[14px] font-bold tracking-wider text-primary uppercase">{String(a + 1).padStart(2, "0")} · етап</div><div className="text-[22px] font-extrabold">{cur.n}</div></div></div>
+          <div><div className="text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Дія користувача</div><div className="mt-1 text-[18px] font-semibold">«{cur.act}»</div></div>
+          <div><div className="text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Touchpoint</div><div className="mt-1 text-[18px] font-semibold">{cur.tp}</div></div>
+          <div><div className="text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Маркетингова мета</div><div className="mt-1 text-[18px] font-semibold text-primary">{cur.goal}</div></div>
         </div>
         <div className="mt-auto grid grid-cols-10 gap-x-3 border-t pt-3">
           {beh.map((b, i) => <span key={b} className={`text-center text-[14px] transition-colors ${i === a ? "font-semibold text-primary" : "text-muted-foreground"}`}>{b}</span>)}
@@ -564,8 +564,8 @@ function EmailModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("keydown", k, true);
   }, [onClose]);
   return createPortal(
-    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/60 p-6 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={onClose}>
+      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl border border-border/60 bg-card shadow-modal animate-in zoom-in-95 fade-in duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 border-b px-5 py-3 text-sm font-semibold"><Mail className="size-4 text-primary" />Email NeuroMath Academy · SendPulse
           <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
         </div>
@@ -583,8 +583,8 @@ function ReportModal({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener("keydown", k, true);
   }, [onClose]);
   return createPortal(
-    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/60 p-6 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={onClose}>
+      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl border border-border/60 bg-card shadow-modal animate-in zoom-in-95 fade-in duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-2 border-b px-5 py-3 text-sm font-semibold"><FileText className="size-4 text-primary" />Персональний звіт NeuroMath Academy · 34/45 · 4 сторінки
           <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
         </div>
@@ -684,33 +684,33 @@ function S10() {
         <div className={`flex flex-col rounded-3xl border bg-card p-6 shadow-card ${R}`} style={rise(2)}>
           <div className="flex items-center gap-2">
             <div className="text-sm font-bold tracking-[0.14em] text-primary uppercase">Ілюстративна сценарна модель</div>
-            <span className="ml-auto rounded-full bg-accent px-2.5 py-0.5 text-[12px] font-bold text-primary">FORECAST / ПРОГНОЗ</span>
-            <span className="rounded-full border px-2.5 py-0.5 text-[12px] font-bold text-muted-foreground">НЕ ФАКТИЧНІ РЕЗУЛЬТАТИ</span>
+            <span className="ml-auto rounded-full bg-accent px-2.5 py-0.5 text-[14px] font-bold text-primary">FORECAST / ПРОГНОЗ</span>
+            <span className="rounded-full border px-2.5 py-0.5 text-[14px] font-bold text-muted-foreground">НЕ ФАКТИЧНІ РЕЗУЛЬТАТИ</span>
           </div>
           <p className="mt-1 text-[15px] text-muted-foreground">Як може виглядати шлях від трафіку до покупки за початковими сценарними припущеннями</p>
           <div className="mt-4 flex items-center gap-4 rounded-2xl bg-muted/60 px-4 py-3">
-            <div className="shrink-0"><div className="text-[12px] font-bold tracking-wider text-muted-foreground uppercase">Відвідувачі сайту</div><div className="text-[34px] leading-none font-extrabold text-primary tabular-nums"><Tween value={v} /></div></div>
+            <div className="shrink-0"><div className="text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Відвідувачі сайту</div><div className="text-[34px] leading-none font-extrabold text-primary tabular-nums"><Tween value={v} /></div></div>
             <input type="range" min={100} max={1000} step={50} value={v} onChange={(e) => setV(+e.target.value)} onKeyDown={(e) => e.stopPropagation()} className="flex-1 accent-[var(--primary)]" aria-label="Відвідувачі сайту" />
-            <button onClick={() => setV(500)} className="shrink-0 rounded-full border border-primary/30 bg-card px-3 py-1 text-[13px] font-semibold text-primary transition hover:bg-accent">Базовий сценарій</button>
+            <button onClick={() => setV(500)} className="shrink-0 rounded-full border border-primary/30 bg-card px-3 py-1 text-[14px] font-semibold text-primary transition hover:bg-accent">Базовий сценарій</button>
           </div>
           <div className="mt-3 flex flex-1 flex-col justify-around">
             {fun.map((f, i) => (
               <div key={f.l} className="relative" onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)}>
                 <div className="flex items-baseline gap-3">
                   <span className="text-[14px] font-bold tracking-wider uppercase">{f.l}</span>
-                  <span className="text-[13px] text-muted-foreground">{f.p}</span>
+                  <span className="text-[14px] text-muted-foreground">{f.p}</span>
                   <span className={`ml-auto text-[28px] leading-none font-extrabold tabular-nums ${i === 3 ? "text-primary" : ""}`}><Tween value={f.n} /></span>
                 </div>
                 <div className="mt-1.5 h-4 w-full rounded-full bg-muted">
                   <div className="h-full rounded-full transition-[width] duration-500 ease-out" style={{ width: `${Math.max(1.5, (f.n / 1000) * 100)}%`, background: i === 3 ? "var(--primary)" : `color-mix(in oklab, var(--primary) ${25 + i * 18}%, var(--accent))` }} />
                 </div>
-                {hov === i && <div className="absolute top-full right-0 z-10 mt-1 max-w-[340px] rounded-xl border bg-card px-3 py-2 text-[13px] shadow-card">{f.t}</div>}
+                {hov === i && <div className="absolute top-full right-0 z-10 mt-1 max-w-[340px] rounded-xl border bg-card px-3 py-2 text-[14px] shadow-card">{f.t}</div>}
               </div>
             ))}
           </div>
           <div className="mt-3 grid grid-cols-[1fr_1fr_1.4fr] items-center gap-3 rounded-2xl border bg-muted/40 px-4 py-2.5">
-            <div><div className="text-[12px] font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="text-[15px] font-semibold tabular-nums">{v} → {bk} → {att} → {paid}</div></div>
-            <div><div className="text-[12px] font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="text-[15px] font-semibold text-muted-foreground">—</div></div>
+            <div><div className="text-[14px] font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="text-[15px] font-semibold tabular-nums">{v} → {bk} → {att} → {paid}</div></div>
+            <div><div className="text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="text-[15px] font-semibold text-muted-foreground">—</div></div>
             <div className="text-[14px] leading-[1.55] text-muted-foreground">Фактичні дані будуть додані після запуску рекламних кампаній. Коефіцієнти — сценарні припущення.</div>
           </div>
         </div>
@@ -808,13 +808,13 @@ function ApxFrame({ k, title, children }: { k: number; title: string; children: 
   return (
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
-      <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
+      <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/[0.06] blur-3xl" />
       <div className="relative flex items-center gap-3">
         <div className="grid size-8 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
         <span className="rounded-full border border-primary/30 bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">ДОДАТКОВИЙ МАТЕРІАЛ · {String(k).padStart(2, "0")}</span>
         <span className="ml-auto text-sm text-muted-foreground">Не входить до основних 12 слайдів</span>
       </div>
-      <h2 className="relative mt-8 text-[52px] leading-[1.05] font-extrabold tracking-tight">{title}</h2>
+      <h2 className="relative mt-8 font-display text-[48px] leading-[1.06] font-bold tracking-[-0.02em]">{title}</h2>
       <div className="relative mt-8 min-h-0 flex-1">{children}</div>
     </div>
   );
@@ -864,8 +864,8 @@ function ApxLayer({ onClose }: { onClose: () => void }) {
   }, [onClose, v]);
   const pill = "inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card px-4 py-1.5 text-sm font-semibold transition hover:border-primary/50 hover:bg-accent hover:text-primary";
   if (v === null) return createPortal(
-    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
-      <div className="w-[min(640px,94vw)] rounded-3xl bg-card p-6 shadow-glow" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/60 p-6 backdrop-blur-[6px] animate-in fade-in duration-300" onClick={onClose}>
+      <div className="w-[min(640px,94vw)] rounded-3xl border border-border/60 bg-card p-6 shadow-modal animate-in zoom-in-95 fade-in duration-300" onClick={(e) => e.stopPropagation()}>
         <div className="mb-4 flex items-center"><span className="text-sm font-extrabold tracking-[0.14em] text-primary">ДОДАТКОВІ МАТЕРІАЛИ</span>
           <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button></div>
         <div className="grid gap-3">
@@ -897,7 +897,7 @@ function ApxLayer({ onClose }: { onClose: () => void }) {
 function Appendix() {
   return (
     <section className="mx-auto max-w-6xl px-6 py-16 print:hidden">
-      <p className="text-xs font-bold tracking-[0.2em] text-primary uppercase">Додаток · не входить у головну презентацію</p>
+      <p className="text-sm font-bold tracking-[0.2em] text-primary uppercase">Додаток · не входить у головну презентацію</p>
       <h2 className="mt-2 text-3xl font-extrabold">Додаткові матеріали</h2>
       <h3 className="mt-10 text-xl font-bold">SWOT-аналіз</h3>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -1007,7 +1007,7 @@ function Deck() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-3">
             <div className="grid size-10 place-items-center rounded-full bg-brand text-primary-foreground shadow-glow"><Brain className="size-5" /></div>
-            <div><div className="font-extrabold">Neuro<span className="text-brand">Math</span> Academy</div><div className="text-xs text-muted-foreground">Маркетингова презентація запуску · 12 слайдів · ≈7 хв</div></div>
+            <div className="font-display font-bold">Neuro<span className="text-brand">Math</span> Academy</div>
           </div>
           <div className="flex gap-2">
             <button onClick={() => window.print()} className="inline-flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-medium"><Printer className="size-4" />Друк / PDF</button>
@@ -1019,7 +1019,7 @@ function Deck() {
         {SLIDES.map((S, n) => (
           <div key={n} id={`slide-${n + 1}`} className="print-slide group relative aspect-video overflow-hidden rounded-3xl border shadow-card print:rounded-none print:border-0 print:shadow-none">
             <Scaled><S /></Scaled>
-            <button onClick={() => enter(n)} className="ui-control absolute right-4 bottom-4 rounded-full bg-card/90 px-3 py-1.5 text-xs font-semibold opacity-0 shadow-card transition group-hover:opacity-100">Показати з цього слайда</button>
+            <button onClick={() => enter(n)} className="ui-control absolute right-4 bottom-4 rounded-full bg-card/90 px-3 py-1.5 text-sm font-semibold opacity-0 shadow-card transition group-hover:opacity-100">Показати з цього слайда</button>
           </div>
         ))}
       </main>
