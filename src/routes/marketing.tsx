@@ -811,7 +811,7 @@ function ApxFrame({ k, title, children }: { k: number; title: string; children: 
       <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
       <div className="relative flex items-center gap-3">
         <div className="grid size-8 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
-        <span className="rounded-full border border-primary/30 bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">APPENDIX / ДОДАТКОВИЙ МАТЕРІАЛ · {String(k).padStart(2, "0")}</span>
+        <span className="rounded-full border border-primary/30 bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">ДОДАТКОВИЙ МАТЕРІАЛ · {String(k).padStart(2, "0")}</span>
         <span className="ml-auto text-sm text-muted-foreground">Не входить до основних 12 слайдів</span>
       </div>
       <h2 className="relative mt-8 text-[52px] leading-[1.05] font-extrabold tracking-tight">{title}</h2>
