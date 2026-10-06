@@ -7,4 +7,4 @@
 - [x] Rework presentation per new brief (ПЕРЕРОБИ_ПОТОЧНУ_ПРЕЗЕНТАЦІЮ…txt), Ukrainian only
 - [x] Use landing site neuro-math-canvas.lovable.app + research Drive folder as sources
 - [ ] Real email screenshot for slide 7 (waiting on user)
-- [ ] Final 12-slide version per 'Внеси фінальні зміни' brief; site = neuromath-academydg.vercel.app
+- [x] Final 12-slide version per 'Внеси фінальні зміни' brief; site = neuromath-academydg.vercel.app
