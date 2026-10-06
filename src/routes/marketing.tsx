@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X } from "lucide-react";
+import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import report1 from "@/assets/creatives/report1.png.asset.json";
@@ -393,43 +393,74 @@ function S7() {
 }
 
 function S8() {
+  const [hov, setHov] = useState<number | null>(null);
+  const [sel, setSel] = useState(2);
+  const a = hov ?? sel;
+  const nodes = [
+    { n: "Трафік", I: Megaphone, act: "Бачить рекламу / контент", tp: "Google Ads · Meta Ads · SEO · Social", goal: "Awareness / Traffic" },
+    { n: "Сайт", I: Globe, act: "Переходить на сайт", tp: "Website", goal: "Interest" },
+    { n: "Тест рівня", I: ClipboardCheck, act: "Проходить безкоштовний тест", tp: "Website", goal: "Lead" },
+    { n: "Лід", I: UserPlus, act: "Залишає контакт", tp: "Form / Test", goal: "Lead capture" },
+    { n: "Діагностика", I: FileText, act: "Отримує результат", tp: "Email / PDF", goal: "Personalization" },
+    { n: "Пробний урок", I: Presentation, act: "Записується та відвідує", tp: "Website / Email", goal: "Conversion" },
+    { n: "Оплата", I: CreditCard, act: "Купує навчання", tp: "Онлайн-оплата", goal: "Purchase" },
+    { n: "Навчання", I: GraduationCap, act: "Навчається", tp: "Learning / платформа", goal: "Experience" },
+    { n: "Результат", I: TrendingUp, act: "Бачить прогрес", tp: "Звіти / Email", goal: "Retention" },
+    { n: "Рекомендація ↺", I: RefreshCw, act: "Повертається / рекомендує", tp: "Referral / Email", goal: "Referral" },
+  ];
   const phases = [
-    { en: "ACQUISITION", ua: "Залучення", st: ["Трафік", "Сайт"], ch: ["Google Ads", "Meta Ads", "SEO", "Instagram", "TikTok", "Facebook"], h: 340, o: 0.62 },
-    { en: "CONVERSION", ua: "Конверсія", st: ["Тест рівня", "Лід", "Діагностика", "Пробний урок"], ch: ["Website", "Test", "Email", "Remarketing"], h: 295, o: 0.8 },
-    { en: "PURCHASE", ua: "Покупка", st: ["Оплата", "Навчання"], ch: [], h: 250, o: 1 },
+    { l: "01 ACQUISITION / ЗАЛУЧЕННЯ", s: 0, e: 2, ch: ["Google Ads", "Meta Ads", "SEO", "Instagram", "TikTok", "Facebook"] },
+    { l: "02 CONVERSION / КОНВЕРСІЯ", s: 2, e: 6, ch: ["Website", "Test", "Email", "Remarketing"] },
+    { l: "03 PURCHASE / ПОКУПКА", s: 6, e: 8, ch: [] },
+    { l: "04 RETENTION / УТРИМАННЯ", s: 8, e: 10, ch: ["Email", "Learning", "Referral"] },
   ];
   const beh = ["Побачив", "Перейшов", "Пройшов тест", "Залишив контакт", "Записався", "Відвідав", "Оплатив", "Навчається", "Отримав результат", "Рекомендує"];
-  const arrow = "polygon(0 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%, 22px 50%)";
+  const cur = nodes[a]!;
+  const ph = phases.find((p) => a >= p.s && a < p.e)!;
   return (
     <Frame n={8} kicker="CUSTOMER JOURNEY / ШЛЯХ КЛІЄНТА" title="Як користувач перетворюється на клієнта">
-      <div className="flex h-full flex-col gap-4">
-        <div className="grid grid-cols-[2.2fr_3.6fr_2fr_2.4fr] gap-x-1">
-          <div className="col-span-3 mb-2 flex items-center gap-3 text-[14px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/30" /></div>
-          <div className="mb-2 flex items-center gap-3 pl-4 text-[14px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/30" /></div>
+      <div className="flex h-full flex-col">
+        <div className="grid grid-cols-10 gap-x-3">
+          <div className="col-span-6 flex items-center gap-3 text-[13px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/25" /></div>
+          <div className="col-span-4 flex items-center gap-3 text-[13px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/25" /></div>
           {phases.map((p, i) => (
-            <div key={p.en} className={`flex h-[340px] items-center ${R}`} style={rise(i * 2 + 2)}>
-              <div className="flex w-full flex-col justify-center gap-3 bg-brand py-4 pr-10 pl-9 text-primary-foreground" style={{ height: p.h, clipPath: arrow, opacity: p.o }}>
-                <div className="text-[14px] font-bold tracking-wider opacity-80">{String(i + 1).padStart(2, "0")} · {p.en} / {p.ua.toUpperCase()}</div>
-                <div className="flex flex-wrap items-center gap-1.5">{p.st.map((s, k) => <span key={s} className="flex items-center gap-1.5"><span className="rounded-lg bg-primary-foreground/20 px-3 py-2 text-[20px] font-bold">{s}</span>{k < p.st.length - 1 && <ChevronRight className="size-4" />}</span>)}</div>
-              </div>
-            </div>
-          ))}
-          <div className={`ml-3 flex h-[340px] items-center ${R}`} style={rise(8)}>
-            <div className="relative flex h-[260px] w-full flex-col justify-center gap-3 rounded-[28px] border-2 border-dashed border-teal/50 bg-card p-5">
-              <RefreshCw className="absolute top-4 right-4 size-6 text-teal" />
-              <div className="text-[14px] font-bold tracking-wider text-teal">04 · RETENTION / УТРИМАННЯ</div>
-              <div className="flex flex-wrap items-center gap-1.5"><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Результат</span><ChevronRight className="size-4 text-teal" /><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Повтор / рекомендація ↺</span></div>
-            </div>
-          </div>
-          {[...phases.map((p) => p.ch), ["Email", "Learning", "Referral"]].map((c, i) => (
-            <div key={i} className={`mt-3 flex flex-wrap content-start gap-1.5 pr-6 ${i === 3 ? "pl-4" : ""} ${R}`} style={rise(i + 9)}>
-              {c.map((x) => <span key={x} className="rounded-full border bg-card px-3 py-1 text-[14px] font-semibold">{x}</span>)}
+            <div key={p.l} className={`mt-3 border-t-2 pt-2 transition-colors ${ph === p ? "border-primary" : "border-primary/20"} ${R}`} style={{ gridColumn: `${p.s + 1} / ${p.e + 1}`, ...rise(i) }}>
+              <div className={`text-[14px] font-bold tracking-wide ${ph === p ? "text-primary" : "text-primary/60"}`}>{p.l}</div>
+              <div className="mt-1.5 flex min-h-[26px] flex-wrap gap-1">{p.ch.map((c) => <span key={c} className="rounded-full bg-accent px-2.5 py-0.5 text-[13px] font-medium text-accent-foreground">{c}</span>)}</div>
             </div>
           ))}
         </div>
-        <div className="mt-8 rounded-2xl border bg-card/70 px-5 py-3">
-          <div className="mb-2 text-[14px] font-bold tracking-wider text-muted-foreground uppercase">Дії користувача</div>
-          <div className="flex flex-wrap items-center gap-1.5">{beh.map((b, i) => <span key={b} className={`flex items-center gap-1.5 ${R}`} style={rise(i + 12)}><span className="text-[16px] font-medium">{b}</span>{i < beh.length - 1 && <ChevronRight className="size-4 text-primary" />}</span>)}</div>
+        <div className="relative mt-20 grid grid-cols-10 gap-x-3">
+          <svg className="pointer-events-none absolute inset-x-0 top-[22px] h-1 w-full" preserveAspectRatio="none" viewBox="0 0 100 2">
+            <line x1="5" y1="1" x2="95" y2="1" stroke="var(--border)" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+            <line x1="5" y1="1" x2="95" y2="1" stroke="var(--primary)" strokeOpacity="0.45" strokeWidth="3" className="draw-line" vectorEffect="non-scaling-stroke" />
+            <line x1="5" y1="1" x2={5 + a * 10} y2="1" stroke="var(--primary)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ transition: "all .4s" }} />
+          </svg>
+          <svg className="pointer-events-none absolute -top-9 h-10" style={{ left: "85%", width: "10%" }} viewBox="0 0 100 40" preserveAspectRatio="none" fill="none">
+            <path d="M95 38 C 90 4, 10 4, 5 38" stroke="var(--teal)" strokeWidth="2" strokeDasharray="5 4" vectorEffect="non-scaling-stroke" />
+            <path d="M5 38 l -4 -8 M5 38 l 7 -6" stroke="var(--teal)" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+          </svg>
+          {nodes.map(({ n, I }, i) => {
+            const on = i === a;
+            const done = i < a;
+            return (
+              <button key={n} onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)} onClick={() => setSel(i)} className={`group/n relative flex flex-col items-center ${R}`} style={rise(i + 3)}>
+                <span className={`relative z-10 grid size-11 place-items-center rounded-full border-2 transition duration-300 ${on ? "border-primary bg-brand text-primary-foreground shadow-glow ring-4 ring-primary/15" : done ? "border-primary/40 bg-card text-primary" : "border-border bg-card text-muted-foreground"}`}><I className="size-5" /></span>
+                <span className={`mt-3 w-full rounded-2xl border-2 bg-card px-2 py-3 text-center text-[16px] leading-tight font-bold shadow-card transition duration-300 ${on ? "scale-105 border-primary text-primary" : "border-border text-foreground group-hover/n:border-primary/50"}`}>
+                  <span className="block text-[12px] font-semibold text-muted-foreground">{String(i + 1).padStart(2, "0")}</span>{n}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <div key={a} className="mt-12 grid grid-cols-[1.1fr_1fr_1fr_1fr] items-center gap-6 rounded-3xl border border-primary/25 bg-accent/40 px-7 py-5 animate-in fade-in duration-300">
+          <div className="flex items-center gap-4"><span className="grid size-12 place-items-center rounded-2xl bg-brand text-primary-foreground"><cur.I className="size-6" /></span><div><div className="text-[13px] font-bold tracking-wider text-primary uppercase">{String(a + 1).padStart(2, "0")} · етап</div><div className="text-[22px] font-extrabold">{cur.n}</div></div></div>
+          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Дія користувача</div><div className="mt-1 text-[18px] font-semibold">«{cur.act}»</div></div>
+          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Touchpoint</div><div className="mt-1 text-[18px] font-semibold">{cur.tp}</div></div>
+          <div><div className="text-[13px] font-bold tracking-wider text-muted-foreground uppercase">Маркетингова мета</div><div className="mt-1 text-[18px] font-semibold text-primary">{cur.goal}</div></div>
+        </div>
+        <div className="mt-auto grid grid-cols-10 gap-x-3 border-t pt-3">
+          {beh.map((b, i) => <span key={b} className={`text-center text-[14px] transition-colors ${i === a ? "font-semibold text-primary" : "text-muted-foreground"}`}>{b}</span>)}
         </div>
       </div>
     </Frame>
