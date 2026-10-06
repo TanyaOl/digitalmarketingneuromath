@@ -1,4 +1,4 @@
-import moodImg from "@/assets/mood-teslia.png.asset.json";
+import moodImg from "@/assets/mood-teslia-v2.png.asset.json";
 import teslia from "@/assets/teslia.jpg.asset.json";
 import beetrootLogo from "@/assets/beetroot-academy.png.asset.json";
 import { createFileRoute } from "@tanstack/react-router";
