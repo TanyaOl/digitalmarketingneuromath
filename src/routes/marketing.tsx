@@ -769,8 +769,10 @@ function S11() {
   );
 }
 
+const ApxCtx = createContext<() => void>(() => {});
 function S12() {
   const go = useContext(GoCtx);
+  const openApx = useContext(ApxCtx);
   return (
     <Frame n={12} kicker="SCALING / ГОТОВА СИСТЕМА" title="Від дослідження до готової системи запуску">
       <div className="flex h-full flex-col gap-6">
@@ -791,12 +793,105 @@ function S12() {
           <Sparkles className="size-10 shrink-0 text-cyan" />
           <p className="text-[30px] leading-snug font-bold">NeuroMath Academy переходить від ідеї нового бренду до керованої системи запуску, вимірювання та — після підтвердження даними — масштабування.</p>
         </div>
+        <div className="-mt-3 -mb-6 flex justify-end">
+          <button onClick={openApx} className="ui-control rounded-full border border-border bg-card/80 px-4 py-1.5 text-[14px] font-semibold text-muted-foreground transition hover:border-primary/50 hover:text-primary">Додаткові матеріали ↗</button>
+        </div>
       </div>
     </Frame>
   );
 }
 
 const SLIDES = [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12];
+
+/* ---------- appendix (outside the 12-slide deck) ---------- */
+function ApxFrame({ k, title, children }: { k: number; title: string; children: ReactNode }) {
+  return (
+    <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
+      <div className="slide-grid pointer-events-none absolute inset-0" />
+      <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
+      <div className="relative flex items-center gap-3">
+        <div className="grid size-8 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
+        <span className="rounded-full border border-primary/30 bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">APPENDIX / ДОДАТКОВИЙ МАТЕРІАЛ · {String(k).padStart(2, "0")}</span>
+        <span className="ml-auto text-sm text-muted-foreground">Не входить до основних 12 слайдів</span>
+      </div>
+      <h2 className="relative mt-8 text-[52px] leading-[1.05] font-extrabold tracking-tight">{title}</h2>
+      <div className="relative mt-8 min-h-0 flex-1">{children}</div>
+    </div>
+  );
+}
+function A1() {
+  return (
+    <ApxFrame k={1} title="SWOT-аналіз">
+      <div className="grid h-full grid-cols-2 grid-rows-2 gap-5">
+        {Object.entries(D.swot).map(([k, items]) => (
+          <div key={k} className="rounded-3xl border bg-card p-6 shadow-card"><div className="text-2xl font-extrabold text-primary">{k}</div><ul className="mt-3 space-y-1.5 text-[19px] text-muted-foreground">{items.map((i) => <li key={i}>• {i}</li>)}</ul></div>
+        ))}
+      </div>
+    </ApxFrame>
+  );
+}
+function A2() {
+  return (
+    <ApxFrame k={2} title="Що вимірюватимемо після запуску · прогноз і факт">
+      <div className="grid h-full grid-cols-[1.25fr_1fr] gap-6">
+        <div className="grid grid-cols-2 gap-4">
+          {D.measurement.map((m) => (
+            <div key={m.area} className="rounded-3xl border bg-card p-5 shadow-card"><div className="text-xl font-extrabold">{m.area}</div><div className="text-[16px] font-semibold text-primary">{m.tool}</div><ul className="mt-2 space-y-1 text-[16px] text-muted-foreground">{m.metrics.map((x) => <li key={x}>{x}</li>)}</ul></div>
+          ))}
+        </div>
+        <div className="overflow-hidden rounded-3xl border bg-card shadow-card">
+          <table className="w-full text-[17px]">
+            <thead className="bg-muted"><tr><th className="p-3 text-left">KPI</th><th className="p-3 text-right">Прогноз</th><th className="p-3 text-right">Факт</th></tr></thead>
+            <tbody>{D.forecastVsActual.map((r) => <tr key={r.kpi} className="border-t"><td className="p-3">{r.kpi}</td><td className="p-3 text-right font-semibold">{r.forecast}</td><td className="p-3 text-right text-muted-foreground">{r.actual ?? "—"}</td></tr>)}</tbody>
+          </table>
+        </div>
+      </div>
+    </ApxFrame>
+  );
+}
+const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }];
+
+function ApxLayer({ onClose }: { onClose: () => void }) {
+  const [v, setV] = useState<number | null>(null);
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      e.stopImmediatePropagation();
+      if (e.key === "Escape") { e.preventDefault(); onClose(); }
+      else if (v !== null && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { e.preventDefault(); setV((x) => (x! + 1) % 2); }
+    };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose, v]);
+  const pill = "inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card px-4 py-1.5 text-sm font-semibold transition hover:border-primary/50 hover:bg-accent hover:text-primary";
+  if (v === null) return createPortal(
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div className="w-[min(640px,94vw)] rounded-3xl bg-card p-6 shadow-glow" onClick={(e) => e.stopPropagation()}>
+        <div className="mb-4 flex items-center"><span className="text-sm font-extrabold tracking-[0.14em] text-primary">ДОДАТКОВІ МАТЕРІАЛИ</span>
+          <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button></div>
+        <div className="grid gap-3">
+          {APX.map((a, j) => (
+            <button key={j} onClick={() => setV(j)} className="flex items-center gap-4 rounded-2xl border px-5 py-4 text-left transition hover:border-primary/50 hover:bg-accent">
+              <span className="text-2xl font-extrabold text-brand">0{j + 1}</span><span className="flex-1 font-semibold">{a.t}</span><span className="text-sm font-semibold text-primary">Переглянути →</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>, document.body);
+  const C = APX[v]!.C;
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex flex-col bg-muted">
+      <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled><C key={v} /></Scaled></div>
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
+        <button onClick={onClose} className={pill}><ChevronLeft className="size-4" />Назад до презентації</button>
+        <span className="mx-1 h-6 w-px bg-border" />
+        <button onClick={() => setV((v + 1) % 2)} disabled={v === 0} className={`${pill} disabled:opacity-35`}>← Попередній</button>
+        <div className="flex gap-1.5">{APX.map((_, j) => <button key={j} aria-label={`Додаток ${j + 1}`} onClick={() => setV(j)} className={`size-2.5 rounded-full ${j === v ? "bg-primary" : "bg-border"}`} />)}</div>
+        <button onClick={() => setV((v + 1) % 2)} disabled={v === 1} className={`${pill} disabled:opacity-35`}>Наступний →</button>
+        <span className="mx-1 h-6 w-px bg-border" />
+        <button onClick={onClose} className={pill} aria-label="Закрити"><X className="size-4" />Закрити</button>
+      </div>
+    </div>, document.body);
+}
 
 /* ---------- appendix ---------- */
 function Appendix() {
@@ -832,6 +927,7 @@ function Deck() {
   const [pres, setPres] = useState(false);
   const [ov, setOv] = useState(false);
   const [i, setI] = useState(0);
+  const [apx, setApx] = useState(false);
   const N = SLIDES.length;
   const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(N - 1, x + d))), [N]);
   const to = useCallback((n: number) => setI(Math.max(0, Math.min(N - 1, n))), [N]);
@@ -869,7 +965,8 @@ function Deck() {
   if (pres) {
     const S = SLIDES[i]!;
     return (
-      <GoCtx.Provider value={(n) => to(n - 1)}>
+      <GoCtx.Provider value={(n) => to(n - 1)}><ApxCtx.Provider value={() => setApx(true)}>
+        {apx && <ApxLayer onClose={() => { setApx(false); to(N - 1); }} />}
         <div className="fixed inset-0 z-50 flex flex-col bg-muted">
           <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled><S key={i} /></Scaled></div>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
@@ -899,12 +996,13 @@ function Deck() {
             </div>
           )}
         </div>
-      </GoCtx.Provider>
+      </ApxCtx.Provider></GoCtx.Provider>
     );
   }
 
   return (
-    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}>
+    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}><ApxCtx.Provider value={() => setApx(true)}>
+      {apx && <ApxLayer onClose={() => setApx(false)} />}
       <header className="ui-control sticky top-0 z-40 border-b glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-3">
@@ -926,6 +1024,6 @@ function Deck() {
         ))}
       </main>
       <Appendix />
-    </GoCtx.Provider>
+    </ApxCtx.Provider></GoCtx.Provider>
   );
 }
