@@ -887,7 +887,7 @@ function A3() {
 }
 const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }];
 
-const MOOD_X = [[72, 574], [590, 1090], [1108, 1625]], MOOD_Y = [[172, 408], [421, 655], [668, 917]];
+const MOOD_X: [number, number][] = [[72, 574], [590, 1090], [1108, 1625]], MOOD_Y: [number, number][] = [[172, 408], [421, 655], [668, 917]];
 function Mood() {
   const [m, setM] = useState<number | null>(null);
   return (
