@@ -526,6 +526,7 @@ function S9() {
   return (
     <>
     {open && <EmailModal onClose={() => setOpen(false)} />}
+    {reportOpen && <ReportModal onClose={() => setReportOpen(false)} />}
     <Frame n={9} kicker="LEAD NURTURING / ПРОГРІВ ЛІДА" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
       <div className="grid h-[calc(100%-64px)] grid-cols-[35fr_28fr_35fr] gap-6">
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
