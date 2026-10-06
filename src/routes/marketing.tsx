@@ -394,9 +394,9 @@ function S7() {
 
 function S8() {
   const phases = [
-    { en: "ACQUISITION", ua: "Залучення", st: ["Трафік", "Сайт"], ch: ["Google Ads", "Meta Ads", "SEO", "Instagram", "TikTok", "Facebook"], h: 250, o: 0.62 },
-    { en: "CONVERSION", ua: "Конверсія", st: ["Тест рівня", "Лід", "Діагностика", "Пробний урок"], ch: ["Website", "Test", "Email", "Remarketing"], h: 215, o: 0.8 },
-    { en: "PURCHASE", ua: "Покупка", st: ["Оплата", "Навчання"], ch: [], h: 180, o: 1 },
+    { en: "ACQUISITION", ua: "Залучення", st: ["Трафік", "Сайт"], ch: ["Google Ads", "Meta Ads", "SEO", "Instagram", "TikTok", "Facebook"], h: 340, o: 0.62 },
+    { en: "CONVERSION", ua: "Конверсія", st: ["Тест рівня", "Лід", "Діагностика", "Пробний урок"], ch: ["Website", "Test", "Email", "Remarketing"], h: 295, o: 0.8 },
+    { en: "PURCHASE", ua: "Покупка", st: ["Оплата", "Навчання"], ch: [], h: 250, o: 1 },
   ];
   const beh = ["Побачив", "Перейшов", "Пройшов тест", "Залишив контакт", "Записався", "Відвідав", "Оплатив", "Навчається", "Отримав результат", "Рекомендує"];
   const arrow = "polygon(0 0, calc(100% - 30px) 0, 100% 50%, calc(100% - 30px) 100%, 0 100%, 22px 50%)";
@@ -407,18 +407,18 @@ function S8() {
           <div className="col-span-3 mb-2 flex items-center gap-3 text-[14px] font-bold tracking-wider text-primary uppercase"><span>До покупки — FUNNEL</span><span className="h-px flex-1 bg-primary/30" /></div>
           <div className="mb-2 flex items-center gap-3 pl-4 text-[14px] font-bold tracking-wider text-teal uppercase"><span>Після покупки — LIFECYCLE</span><span className="h-px flex-1 bg-teal/30" /></div>
           {phases.map((p, i) => (
-            <div key={p.en} className={`flex h-[250px] items-center ${R}`} style={rise(i * 2 + 2)}>
+            <div key={p.en} className={`flex h-[340px] items-center ${R}`} style={rise(i * 2 + 2)}>
               <div className="flex w-full flex-col justify-center gap-3 bg-brand py-4 pr-10 pl-9 text-primary-foreground" style={{ height: p.h, clipPath: arrow, opacity: p.o }}>
                 <div className="text-[14px] font-bold tracking-wider opacity-80">{String(i + 1).padStart(2, "0")} · {p.en} / {p.ua.toUpperCase()}</div>
-                <div className="flex flex-wrap items-center gap-1.5">{p.st.map((s, k) => <span key={s} className="flex items-center gap-1.5"><span className="rounded-lg bg-primary-foreground/20 px-2.5 py-1.5 text-[17px] font-bold">{s}</span>{k < p.st.length - 1 && <ChevronRight className="size-4" />}</span>)}</div>
+                <div className="flex flex-wrap items-center gap-1.5">{p.st.map((s, k) => <span key={s} className="flex items-center gap-1.5"><span className="rounded-lg bg-primary-foreground/20 px-3 py-2 text-[20px] font-bold">{s}</span>{k < p.st.length - 1 && <ChevronRight className="size-4" />}</span>)}</div>
               </div>
             </div>
           ))}
-          <div className={`ml-3 flex h-[250px] items-center ${R}`} style={rise(8)}>
-            <div className="relative flex h-[200px] w-full flex-col justify-center gap-3 rounded-[28px] border-2 border-dashed border-teal/50 bg-card p-5">
+          <div className={`ml-3 flex h-[340px] items-center ${R}`} style={rise(8)}>
+            <div className="relative flex h-[260px] w-full flex-col justify-center gap-3 rounded-[28px] border-2 border-dashed border-teal/50 bg-card p-5">
               <RefreshCw className="absolute top-4 right-4 size-6 text-teal" />
               <div className="text-[14px] font-bold tracking-wider text-teal">04 · RETENTION / УТРИМАННЯ</div>
-              <div className="flex flex-wrap items-center gap-1.5"><span className="rounded-lg bg-accent px-2.5 py-1.5 text-[17px] font-bold">Результат</span><ChevronRight className="size-4 text-teal" /><span className="rounded-lg bg-accent px-2.5 py-1.5 text-[17px] font-bold">Повтор / рекомендація ↺</span></div>
+              <div className="flex flex-wrap items-center gap-1.5"><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Результат</span><ChevronRight className="size-4 text-teal" /><span className="rounded-lg bg-accent px-3 py-2 text-[20px] font-bold">Повтор / рекомендація ↺</span></div>
             </div>
           </div>
           {[...phases.map((p) => p.ch), ["Email", "Learning", "Referral"]].map((c, i) => (
