@@ -50,7 +50,7 @@ function Scaled({ children }: { children: ReactNode }) {
   );
 }
 
-function Frame({ n, kicker, title, sub, children }: { n: number; kicker: string; title: ReactNode; sub?: string; children: ReactNode }) {
+function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: string; title: ReactNode; sub?: string; badge?: ReactNode; children: ReactNode }) {
   return (
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
@@ -63,6 +63,7 @@ function Frame({ n, kicker, title, sub, children }: { n: number; kicker: string;
         <span className="text-sm font-medium text-muted-foreground">{String(n).padStart(2, "0")} / 09 · {kicker}</span>
       </div>
       <div className="relative mt-8">
+        {badge && <div className="mb-3">{badge}</div>}
         <h2 className={`max-w-[1200px] text-[52px] leading-[1.05] font-extrabold tracking-tight ${R}`}>{title}</h2>
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
@@ -280,8 +281,7 @@ function S5() {
   const cr = D.creatives;
   const pg = D.pageExamples;
   return (
-    <Frame n={5} kicker="Digital-присутність" title="Як бренд буде виглядати в digital-середовищі">
-      <div className="absolute -top-[86px] right-0"><Badge tone="warn">Концепція digital-присутності · без фактичної статистики</Badge></div>
+    <Frame n={5} kicker="Digital-присутність" title="Як бренд буде виглядати в digital-середовищі" badge={<Badge tone="warn">Концепція digital-присутності · без фактичної статистики</Badge>}>
       <div className="grid h-[calc(100%-56px)] grid-cols-[1.05fr_1fr_1fr_1fr] gap-4">
         <div className={`flex min-h-0 flex-col rounded-2xl border bg-card p-3 shadow-card ${R}`} style={rise(2)}>
           <div className="flex items-center justify-between px-1 pb-2 text-xs font-semibold"><span>Instagram · карусель</span><span className="text-primary">{cur + 1}/{D.carousel.length}</span></div>
@@ -366,7 +366,7 @@ function S7() {
     <Frame n={7} kicker="Прогрів ліда" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
       <div className="grid h-[calc(100%-70px)] grid-cols-[1fr_1.1fr_1fr] gap-6">
         <div className={`relative min-h-0 overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2 text-xs font-semibold"><Mail className="size-4 text-primary" /> Email · сторінка 1 звіту</div>
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2 text-xs font-semibold"><Mail className="size-4 text-primary" /> Лист із персональним звітом · с. 1</div>
           <img src={report1.url} alt="Персональний звіт NeuroMath, сторінка 1" className="w-full object-cover object-top" />
         </div>
         <div className="flex flex-col gap-4">
@@ -406,8 +406,7 @@ function S8() {
   const att = Math.round(trial * m.attendanceRate);
   const paid = Math.round(att * m.paymentRate);
   return (
-    <Frame n={8} kicker="Прогноз і KPI" title="Який результат очікуємо після запуску?">
-      <div className="absolute -top-[86px] right-0"><Badge tone="warn">Прогноз · не фактичні результати</Badge></div>
+    <Frame n={8} kicker="Прогноз і KPI" title="Який результат очікуємо після запуску?" badge={<Badge tone="warn">Прогноз · не фактичні результати</Badge>}>
       <div className="grid h-full grid-cols-[1.15fr_1fr] gap-6">
         <div className="flex flex-col gap-2">
           <div className="text-xs font-bold tracking-wider text-muted-foreground uppercase">KPI-дерево · ціль: перші платні учні</div>
