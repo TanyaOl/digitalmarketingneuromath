@@ -196,7 +196,7 @@ function S2() {
   const facts = [["Попит", "Сформований / стабільний"], ["Конкуренція", "Висока"], ["Пріоритет запуску", "10–11 класи / НМТ"], ["Наступне масштабування", "5–9 класи"]];
   const comp = ["Mathema", "BUKI", "SuperProf", "Ispyt", "Math Corporation"];
   return (
-    <Frame n={2} kicker="Дослідження ринку" title="Що показало маркетингове дослідження?">
+    <Frame n={2} kicker="RESEARCH / ДОСЛІДЖЕННЯ" title="Що показало маркетингове дослідження?">
       <div className="grid h-full grid-cols-[1.55fr_1fr] gap-6">
         <div className="flex flex-col gap-5">
           <div className="grid grid-cols-3 gap-4">
@@ -238,7 +238,7 @@ function S3() {
     <div className="flex flex-wrap items-center gap-1.5">{items.map((x, i) => <span key={x} className="flex items-center gap-1.5"><span className={`rounded-lg px-3 py-1 text-[15px] font-medium ${tone}`}>{x}</span>{i < items.length - 1 && <ChevronRight className="size-4 text-muted-foreground" />}</span>)}</div>
   );
   return (
-    <Frame n={3} kicker="Цільова аудиторія" title="Кого залучаємо і яку проблему вирішуємо?">
+    <Frame n={3} kicker="TARGET AUDIENCE / ЦІЛЬОВА АУДИТОРІЯ" title="Кого залучаємо і яку проблему вирішуємо?">
       <div className="grid h-full grid-cols-[1fr_1fr_0.8fr] gap-6">
         {segs.map((g, i) => (
           <Box key={g.t} i={i} className="flex flex-col gap-4 p-7">
@@ -263,7 +263,7 @@ function S3() {
 function S4() {
   const principles = ["Персоналізація", "Практика та робота над помилками", "Видимий прогрес", "AI-інструменти та цифрова підтримка"];
   return (
-    <Frame n={4} kicker="Позиціонування та стратегія" title="Як дослідження перетворилося на стратегію">
+    <Frame n={4} kicker="STRATEGY / СТРАТЕГІЯ" title="Як дослідження перетворилося на стратегію">
       <div className="flex h-full flex-col gap-6">
         <Flow items={["Проблема", "Інсайт", "Позиціонування", "Маркетингове рішення"]} />
         <div className="grid flex-1 grid-cols-[1.2fr_1fr] gap-6">
@@ -307,7 +307,7 @@ function S5() {
   ];
   const line = [["Впізнаваність", "Meta · Instagram · TikTok"], ["Інтерес", "Google · SEO · Facebook"], ["Лід", "Тест рівня"], ["Прогрів", "Email / SendPulse"], ["Пробний урок", "Сайт · Email"], ["Покупка", "Консультація"]];
   return (
-    <Frame n={5} kicker="Стратегія каналів" title="Як бренд буде виходити на ринок?" sub="Кожен канал має одну чітку роль у воронці.">
+    <Frame n={5} kicker="PROMOTION / ПРОСУВАННЯ" title="Як бренд буде виходити на ринок?" sub="Кожен канал має одну чітку роль у воронці.">
       <div className="flex h-full flex-col gap-6">
         <div className="grid flex-1 grid-cols-3 gap-4">
           {ch.map(([n, r], i) => (
@@ -336,7 +336,7 @@ function S6() {
   const cr = D.creatives;
   const pillars = ["Навчальний контент", "НМТ", "Методика / експертність", "Конверсійний контент"];
   return (
-    <Frame n={6} kicker="Social Media" badge={<Badge tone="warn">Концепція · канали ще не запущені</Badge>} title="Як NeuroMath буде виглядати в Social Media">
+    <Frame n={6} kicker="PROMOTION / SOCIAL MEDIA" badge={<Badge tone="warn">Концепція · канали ще не запущені</Badge>} title="Як NeuroMath буде виглядати в Social Media">
       <div className="grid h-[calc(100%-64px)] grid-cols-[1.35fr_1fr_1fr] gap-5">
         <div className={`flex min-h-0 flex-col gap-3 rounded-3xl border bg-card p-4 shadow-card ${R}`} style={rise(2)}>
           <div className="text-lg font-bold">Instagram</div>
@@ -372,7 +372,7 @@ function S7() {
   const cr = D.creatives;
   const Steps = ({ items }: { items: string[] }) => <Flow items={items} />;
   return (
-    <Frame n={7} kicker="Paid Media" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
+    <Frame n={7} kicker="PROMOTION / PAID MEDIA" badge={<Badge tone="warn">Концепція · кампанії ще не запущені</Badge>} title="Як будемо перехоплювати та формувати попит">
       <div className="grid h-full grid-cols-2 gap-6">
         <div className="flex min-h-0 flex-col gap-4">
           <div className="text-2xl font-extrabold">Google Search · <span className="text-primary">перехоплення попиту</span></div>
@@ -565,7 +565,7 @@ function S11() {
 function S12() {
   const go = useContext(GoCtx);
   return (
-    <Frame n={12} kicker="Готова система" title="Від дослідження до готової системи запуску">
+    <Frame n={12} kicker="SCALING / ГОТОВА СИСТЕМА" title="Від дослідження до готової системи запуску">
       <div className="flex h-full flex-col gap-6">
         <div className="relative grid grid-cols-7 gap-3">
           <svg className="pointer-events-none absolute inset-x-0 top-[34px] h-2 w-full" preserveAspectRatio="none" viewBox="0 0 100 2"><line x1="6" y1="1" x2="94" y2="1" stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="2" className="draw-line" vectorEffect="non-scaling-stroke" /></svg>
@@ -623,19 +623,25 @@ function Appendix() {
 /* ---------- deck shell ---------- */
 function Deck() {
   const [pres, setPres] = useState(false);
+  const [ov, setOv] = useState(false);
   const [i, setI] = useState(0);
-  const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(SLIDES.length - 1, x + d))), []);
+  const N = SLIDES.length;
+  const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(N - 1, x + d))), [N]);
+  const to = useCallback((n: number) => setI(Math.max(0, Math.min(N - 1, n))), [N]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!pres) return;
+      if (e.key === "Escape") { if (ov) setOv(false); else exit(); return; }
+      if (ov) return;
       if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(1); }
       if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(-1); }
-      if (e.key === "Escape") setPres(false);
+      if (e.key === "Home") { e.preventDefault(); to(0); }
+      if (e.key === "End") { e.preventDefault(); to(N - 1); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [pres, go]);
+  });
 
   const enter = (n = 0) => {
     setI(n);
@@ -644,27 +650,54 @@ function Deck() {
   };
   const exit = () => {
     setPres(false);
+    setOv(false);
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   };
+  const toggleFs = () => {
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    else document.documentElement.requestFullscreen?.().catch(() => {});
+  };
+  const pill = "inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card/70 px-4 py-1.5 text-sm font-semibold text-foreground transition hover:border-primary/50 hover:bg-accent hover:text-primary disabled:opacity-35";
 
   if (pres) {
     const S = SLIDES[i]!;
     return (
-      <div className="fixed inset-0 z-50 flex flex-col bg-night">
-        <div className="h-1 bg-night-foreground/10"><div className="h-full bg-brand transition-all duration-500" style={{ width: `${((i + 1) / SLIDES.length) * 100}%` }} /></div>
-        <div className="min-h-0 flex-1 p-4"><Scaled><S key={i} /></Scaled></div>
-        <div className="flex items-center justify-center gap-4 pb-4 text-night-foreground">
-          <button onClick={() => go(-1)} disabled={i === 0} className="inline-flex items-center gap-1 rounded-full border border-night-foreground/20 px-4 py-1.5 text-sm disabled:opacity-30"><ChevronLeft className="size-4" />Назад</button>
-          <span className="w-14 text-center text-sm font-semibold">{i + 1} / {SLIDES.length}</span>
-          <button onClick={() => go(1)} disabled={i === SLIDES.length - 1} className="inline-flex items-center gap-1 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold disabled:opacity-30">Далі<ChevronRight className="size-4" /></button>
-          <button onClick={exit} className="ml-6 inline-flex items-center gap-1 rounded-full border border-night-foreground/20 px-3 py-1.5 text-sm"><Minimize2 className="size-4" />Вийти</button>
+      <GoCtx.Provider value={(n) => to(n - 1)}>
+        <div className="fixed inset-0 z-50 flex flex-col bg-muted">
+          <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled><S key={i} /></Scaled></div>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
+            <button onClick={() => go(-1)} disabled={i === 0} className={pill}><ChevronLeft className="size-4" />Попередній</button>
+            <div className="flex w-40 flex-col items-center gap-1">
+              <span className="text-sm font-bold text-primary">{String(i + 1).padStart(2, "0")} / {N}</span>
+              <div className="h-1 w-full rounded-full bg-primary/15"><div className="h-full rounded-full bg-brand transition-all duration-500" style={{ width: `${((i + 1) / N) * 100}%` }} /></div>
+            </div>
+            <button onClick={() => go(1)} disabled={i === N - 1} className="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-glow disabled:opacity-35">Далі<ChevronRight className="size-4" /></button>
+            <span className="mx-1 h-6 w-px bg-border" />
+            <button onClick={() => setOv(true)} className={pill}><LayoutGrid className="size-4" />Огляд</button>
+            <button onClick={toggleFs} className={pill}><Maximize2 className="size-4" />На весь екран</button>
+            <button onClick={exit} className={pill} aria-label="Вийти"><Minimize2 className="size-4" /></button>
+          </div>
+          {ov && (
+            <div className="absolute inset-0 z-10 grid place-items-center bg-night/40 backdrop-blur-sm" onClick={() => setOv(false)}>
+              <div className="w-[min(860px,92vw)] rounded-3xl border border-primary/20 bg-card p-6 shadow-glow" onClick={(e) => e.stopPropagation()}>
+                <div className="mb-4 flex items-center justify-between"><span className="text-lg font-extrabold">Огляд презентації</span><button onClick={() => setOv(false)} className={pill} aria-label="Закрити"><X className="size-4" /></button></div>
+                <div className="grid grid-cols-3 gap-2">
+                  {TITLES.map((t, k) => (
+                    <button key={t} onClick={() => { to(k); setOv(false); }} className={`flex items-center gap-3 rounded-2xl border px-4 py-3 text-left transition hover:border-primary/50 hover:bg-accent ${k === i ? "border-primary bg-accent text-primary" : ""}`}>
+                      <span className="text-lg font-extrabold text-brand">{String(k + 1).padStart(2, "0")}</span><span className="font-semibold">{t}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </GoCtx.Provider>
     );
   }
 
   return (
-    <div>
+    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}>
       <header className="ui-control sticky top-0 z-40 border-b glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-3">
@@ -679,13 +712,13 @@ function Deck() {
       </header>
       <main className="mx-auto max-w-6xl space-y-8 px-6 py-10 print:max-w-none print:space-y-0 print:p-0">
         {SLIDES.map((S, n) => (
-          <div key={n} className="print-slide group relative aspect-video overflow-hidden rounded-3xl border shadow-card print:rounded-none print:border-0 print:shadow-none">
+          <div key={n} id={`slide-${n + 1}`} className="print-slide group relative aspect-video overflow-hidden rounded-3xl border shadow-card print:rounded-none print:border-0 print:shadow-none">
             <Scaled><S /></Scaled>
             <button onClick={() => enter(n)} className="ui-control absolute right-4 bottom-4 rounded-full bg-card/90 px-3 py-1.5 text-xs font-semibold opacity-0 shadow-card transition group-hover:opacity-100">Показати з цього слайда</button>
           </div>
         ))}
       </main>
       <Appendix />
-    </div>
+    </GoCtx.Provider>
   );
 }
