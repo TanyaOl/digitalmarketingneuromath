@@ -3,6 +3,8 @@ import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutE
 import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X, Megaphone, Globe, ClipboardCheck, UserPlus, Presentation, CreditCard, GraduationCap, TrendingUp } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
+import emailShot from "@/assets/creatives/email.png.asset.json";
+import { createPortal } from "react-dom";
 import report1 from "@/assets/creatives/report1.png.asset.json";
 
 export const Route = createFileRoute("/marketing")({
@@ -467,28 +469,45 @@ function S8() {
   );
 }
 
+function EmailModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopImmediatePropagation(); e.preventDefault(); onClose(); } else e.stopImmediatePropagation(); };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose]);
+  return createPortal(
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 border-b px-5 py-3 text-sm font-semibold"><Mail className="size-4 text-primary" />Email NeuroMath Academy · SendPulse
+          <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
+        </div>
+        <div className="min-h-0 overflow-y-auto"><img src={emailShot.url} alt="Повний email NeuroMath Academy" className="block w-full" /></div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function S9() {
+  const [open, setOpen] = useState(false);
   const groups = [
     { t: "Сильні", I: Check, cls: "text-teal", items: "Числа та вирази · Рівняння · Ймовірність" },
     { t: "Увага", I: CircleDot, cls: "text-spark-foreground", items: "Функції · Планіметрія" },
     { t: "Повторити", I: AlertCircle, cls: "text-destructive", items: "Стереометрія · Тригонометрія" },
   ];
   return (
+    <>
+    {open && <EmailModal onClose={() => setOpen(false)} />}
     <Frame n={9} kicker="LEAD NURTURING / ПРОГРІВ ЛІДА" title="Як перетворити інтерес на готовність купити" sub="Персоналізація починається ще до першого уроку.">
       <div className="grid h-[calc(100%-64px)] grid-cols-[35fr_28fr_35fr] gap-6">
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(2)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><Mail className="size-4 text-primary" /> 01 · EMAIL · SendPulse</div>
-          <div className="flex min-h-0 flex-1 flex-col gap-3 p-5">
-            <div className="space-y-1 border-b pb-3 text-[14px] text-muted-foreground">
-              <div><b className="text-foreground">Від:</b> NeuroMath Academy</div>
-              <div><b className="text-foreground">Тема:</b> Ваш результат тесту рівня — 34/45</div>
-            </div>
-            <div className="flex items-center gap-2"><div className="grid size-8 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div><span className="text-lg font-bold">Neuro<span className="text-brand">Math</span></span></div>
-            <p className="text-[16px] leading-snug">Вітаємо! Ви пройшли безкоштовний тест рівня з математики. Ваш результат — <b>34 з 45 (76%)</b>.</p>
-            <p className="text-[16px] leading-snug text-muted-foreground">У вкладенні — персональний звіт із сильними темами та планом підготовки до НМТ.</p>
-            <div className="flex items-center gap-2 rounded-xl border bg-muted px-3 py-2 text-[14px] font-semibold"><Paperclip className="size-4 text-primary" />Персональний_звіт_NeuroMath.pdf</div>
-            <span className="mt-auto self-start rounded-full bg-brand px-5 py-2.5 text-[16px] font-bold text-primary-foreground">Записатися на пробний урок</span>
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><Mail className="size-4 text-primary" /> 01 · EMAIL · SendPulse
+            <button onClick={() => setOpen(true)} className="ml-auto inline-flex items-center gap-1 rounded-full border border-primary/30 bg-card px-3 py-0.5 text-[14px] font-semibold text-primary transition hover:bg-accent">Переглянути лист <ExternalLink className="size-3.5" /></button>
           </div>
+          <button onClick={() => setOpen(true)} className="group/em relative min-h-0 flex-1 overflow-hidden bg-card" aria-label="Переглянути лист">
+            <img src={emailShot.url} alt="Email NeuroMath Academy з результатом тесту" className="w-full object-cover object-top transition duration-500 group-hover/em:scale-[1.02]" />
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+          </button>
         </div>
         <div className="flex flex-col gap-3">
           <div className={`rounded-3xl bg-hero p-5 text-center text-night-foreground ${R}`} style={rise(3)}>
@@ -510,6 +529,7 @@ function S9() {
       </div>
       <Flow className="absolute right-0 bottom-0 left-0 justify-center" items={["Тест", "Результат", "Email", "PDF", "Пробний урок", "Покупка"]} />
     </Frame>
+    </>
   );
 }
 
