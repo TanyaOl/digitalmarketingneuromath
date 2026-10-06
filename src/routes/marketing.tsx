@@ -1,3 +1,4 @@
+import moodImg from "@/assets/mood-teslia.png.asset.json";
 import teslia from "@/assets/teslia.jpg.asset.json";
 import beetrootLogo from "@/assets/beetroot-academy.png.asset.json";
 import { createFileRoute } from "@tanstack/react-router";
@@ -886,22 +887,26 @@ function A3() {
 }
 const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }];
 
-const MOODS: [string, string][] = [["🤩", "Натхненний"], ["😊", "Радісний"], ["😌", "Спокійний"], ["🤔", "Задумливий"], ["😴", "Втомлений"], ["💪", "Енергійний"], ["🥳", "Святковий"], ["😅", "Трохи хвилююсь"], ["🧠", "Готовий до нових знань"]];
+const MOOD_X: [number, number][] = [[72, 574], [590, 1090], [1108, 1625]], MOOD_Y: [number, number][] = [[172, 408], [421, 655], [668, 917]];
 function Mood() {
   const [m, setM] = useState<number | null>(null);
   return (
-    <div className="slide-canvas relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background px-20 py-16">
-      <div className="pointer-events-none absolute -top-40 -left-32 size-[620px] rounded-full bg-primary/[0.07] blur-3xl" />
-      <span className="relative rounded-full bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">І НАОСТАНОК</span>
-      <h2 className="relative mt-6 text-center font-display text-[72px] leading-none font-bold tracking-[-0.03em]">А який у вас сьогодні <span className="text-brand">настрій?</span></h2>
-      <div className="relative mt-14 grid grid-cols-3 gap-5">
-        {MOODS.map(([e, t], j) => (
-          <button key={t} onClick={() => setM(j)} className={`flex w-[340px] items-center gap-5 rounded-3xl border bg-card px-6 py-5 text-left shadow-card transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 ${m === j ? "scale-[1.03] border-primary ring-2 ring-primary/20" : m !== null ? "opacity-60" : ""}`}>
-            <span className="text-[48px] leading-none">{e}</span><span className={`text-[22px] font-semibold ${m === j ? "text-primary" : ""}`}>{t}</span>
-          </button>
-        ))}
+    <div className="slide-canvas relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background px-10 py-6">
+      <div className="relative aspect-[1672/941] h-[770px] max-w-full">
+        <img src={moodImg.url} alt="Євгеній, який у тебе сьогодні настрій? 9 варіантів" className="absolute inset-0 h-full w-full object-contain" />
+        {MOOD_Y.flatMap(([y0, y1], r) => MOOD_X.map(([x0, x1], c) => {
+          const j = r * 3 + c;
+          return <button key={j} aria-label={`Настрій ${j + 1}`} onClick={() => setM(j)}
+            className={`absolute cursor-pointer rounded-[22px] transition duration-300 ${m === j ? "bg-primary/[0.04] ring-[3px] ring-primary shadow-glow" : "hover:ring-2 hover:ring-primary/30"}`}
+            style={{ left: `${(x0 / 1672) * 100}%`, top: `${(y0 / 941) * 100}%`, width: `${((x1 - x0) / 1672) * 100}%`, height: `${((y1 - y0) / 941) * 100}%` }} />;
+        }))}
       </div>
-      <p className="relative mt-10 h-8 text-[24px] text-muted-foreground">{m !== null ? `Дякую! Ваш настрій: ${MOODS[m]![1].toLowerCase()} ${MOODS[m]![0]}` : "Оберіть один варіант"}</p>
+      <div className="h-[80px] pt-3 text-center">
+        {m !== null && <div key="msg" className="animate-in fade-in slide-in-from-bottom-1 duration-500">
+          <div className="font-display text-[26px] font-bold">Євгенію, дякуємо за цей Digital Marketing марафон! 💜</div>
+          <div className="mt-1 text-[18px] text-muted-foreground">Сподіваємося, після нашої групи твій настрій — точно №1 або №9 😉</div>
+        </div>}
+      </div>
     </div>
   );
 }
