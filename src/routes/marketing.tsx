@@ -552,8 +552,13 @@ function S9() {
           ))}
         </div>
         <div className={`flex min-h-0 flex-col overflow-hidden rounded-2xl border bg-card shadow-glow ${R}`} style={rise(4)}>
-          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> 03 · PDF · персональний звіт</div>
-          <img src={report1.url} alt="Персональний PDF-звіт NeuroMath" className="min-h-0 w-full flex-1 object-cover object-top" />
+          <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5 text-[15px] font-semibold"><FileText className="size-4 text-primary" /> 03 · PDF · персональний звіт
+            <button onClick={() => setReportOpen(true)} className="ml-auto inline-flex items-center gap-1 rounded-full border border-primary/30 bg-card px-3 py-0.5 text-[14px] font-semibold text-primary transition hover:bg-accent">Переглянути звіт <ExternalLink className="size-3.5" /></button>
+          </div>
+          <button onClick={() => setReportOpen(true)} className="group/rp relative min-h-0 flex-1 overflow-hidden bg-card" aria-label="Переглянути звіт">
+            <img src={reportPage1.url} alt="Персональний PDF-звіт NeuroMath" className="w-full object-cover object-top transition duration-500 group-hover/rp:scale-[1.02]" />
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-card to-transparent" />
+          </button>
         </div>
       </div>
       <Flow className="absolute right-0 bottom-0 left-0 justify-center" items={["Тест", "Результат", "Email", "PDF", "Пробний урок", "Покупка"]} />
