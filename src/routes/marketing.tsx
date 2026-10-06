@@ -575,43 +575,81 @@ function S10() {
     ["Покупка", "New Students · Conversion · CAC"],
     ["Утримання", "Retention · Referral"],
   ];
-  const m = D.conversionModel;
-  const v = m.visitors;
-  const trial = Math.round(v * m.trialRate);
-  const att = Math.round(trial * m.attendanceRate);
-  const paid = Math.round(att * m.paymentRate);
-  const fun = [[v, "Відвідувачів"], [trial, "Записів"], [att, "Відвідали пробний урок"], [paid, "Покупок"]] as const;
+  const [v, setV] = useState(500);
+  const [hov, setHov] = useState<number | null>(null);
+  const bk = Math.round(v * 0.3), att = Math.round(bk * 0.7), paid = Math.round(att * 0.38);
+  const fun = [
+    { l: "Відвідувачі", n: v, p: "100%", t: "Користувачі, які перейшли на сайт з рекламних та органічних каналів." },
+    { l: "Записи", n: bk, p: "30%", t: "Користувачі, які записалися на пробний урок." },
+    { l: "Відвідали пробний", n: att, p: "70% від записів", t: "Користувачі, які фактично відвідали пробний урок." },
+    { l: "Покупки", n: paid, p: "≈38% від відвіданих", t: "Користувачі, які стали учнями." },
+  ];
   return (
     <Frame n={10} kicker="ANALYTICS / АНАЛІТИКА" badge={<Badge tone="warn">FORECAST / ПРОГНОЗ · не фактичні результати</Badge>} title="Як будемо вимірювати ефективність після запуску">
-      <div className="grid h-full grid-cols-[1.1fr_1fr] gap-8">
+      <div className="grid h-full grid-cols-[1fr_1.1fr] gap-8">
         <div className="flex flex-col gap-2.5">
           <div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">KPI TREE / KPI-дерево</div>
           {tree.map(([n, k], i) => (
-            <div key={n} className={`grid grid-cols-[200px_1fr] items-center gap-4 rounded-2xl border bg-card px-5 py-3.5 shadow-card ${R}`} style={rise(i + 1)}>
+            <div key={n} className={`grid grid-cols-[190px_1fr] items-center gap-4 rounded-2xl border bg-card px-5 py-3 shadow-card ${R}`} style={rise(i + 1)}>
               <span className="text-lg font-bold"><span className="mr-2 text-primary">{i + 1}</span>{n}</span>
-              <span className="text-[17px] text-muted-foreground">→ {k}</span>
+              <span className="text-[16px] text-muted-foreground">→ {k}</span>
             </div>
           ))}
-          <div className={`mt-auto grid grid-cols-2 gap-4 rounded-2xl border bg-card p-4 ${R}`} style={rise(8)}>
-            <div><div className="text-sm font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="mt-1 text-[16px] font-semibold">Прогнозна KPI-модель</div></div>
-            <div><div className="text-sm font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="mt-1 text-[16px] font-semibold text-muted-foreground">— після запуску</div></div>
-          </div>
         </div>
-        <div className="flex flex-col items-center">
-          <div className="text-sm font-bold tracking-[0.14em] text-primary uppercase">Ілюстративна сценарна модель</div>
-          <div className="mt-4 flex w-full flex-1 flex-col items-center gap-2">
-            {fun.map(([n, l], i) => (
-              <div key={l} className={`flex flex-1 items-center justify-center gap-4 rounded-2xl bg-brand text-primary-foreground shadow-glow ${R}`} style={{ width: `${100 - i * 15}%`, opacity: 0.6 + i * 0.13, ...rise(i * 2 + 3) }}>
-                <span className="text-[40px] leading-none font-extrabold">{n}</span>
-                <span className="text-[18px] font-semibold">{l}</span>
+        <div className={`flex flex-col rounded-3xl border bg-card p-6 shadow-card ${R}`} style={rise(2)}>
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-bold tracking-[0.14em] text-primary uppercase">Ілюстративна сценарна модель</div>
+            <span className="ml-auto rounded-full bg-accent px-2.5 py-0.5 text-[12px] font-bold text-primary">FORECAST / ПРОГНОЗ</span>
+            <span className="rounded-full border px-2.5 py-0.5 text-[12px] font-bold text-muted-foreground">НЕ ФАКТИЧНІ РЕЗУЛЬТАТИ</span>
+          </div>
+          <p className="mt-1 text-[15px] text-muted-foreground">Як може виглядати шлях від трафіку до покупки за початковими сценарними припущеннями</p>
+          <div className="mt-4 flex items-center gap-4 rounded-2xl bg-muted/60 px-4 py-3">
+            <div className="shrink-0"><div className="text-[12px] font-bold tracking-wider text-muted-foreground uppercase">Відвідувачі сайту</div><div className="text-[34px] leading-none font-extrabold text-primary tabular-nums"><Tween value={v} /></div></div>
+            <input type="range" min={100} max={1000} step={50} value={v} onChange={(e) => setV(+e.target.value)} onKeyDown={(e) => e.stopPropagation()} className="flex-1 accent-[var(--primary)]" aria-label="Відвідувачі сайту" />
+            <button onClick={() => setV(500)} className="shrink-0 rounded-full border border-primary/30 bg-card px-3 py-1 text-[13px] font-semibold text-primary transition hover:bg-accent">Базовий сценарій</button>
+          </div>
+          <div className="mt-3 flex flex-1 flex-col justify-around">
+            {fun.map((f, i) => (
+              <div key={f.l} className="relative" onMouseEnter={() => setHov(i)} onMouseLeave={() => setHov(null)}>
+                <div className="flex items-baseline gap-3">
+                  <span className="text-[14px] font-bold tracking-wider uppercase">{f.l}</span>
+                  <span className="text-[13px] text-muted-foreground">{f.p}</span>
+                  <span className={`ml-auto text-[28px] leading-none font-extrabold tabular-nums ${i === 3 ? "text-primary" : ""}`}><Tween value={f.n} /></span>
+                </div>
+                <div className="mt-1.5 h-4 w-full rounded-full bg-muted">
+                  <div className="h-full rounded-full transition-[width] duration-500 ease-out" style={{ width: `${Math.max(1.5, (f.n / 1000) * 100)}%`, background: i === 3 ? "var(--primary)" : `color-mix(in oklab, var(--primary) ${25 + i * 18}%, var(--accent))` }} />
+                </div>
+                {hov === i && <div className="absolute top-full right-0 z-10 mt-1 max-w-[340px] rounded-xl border bg-card px-3 py-2 text-[13px] shadow-card">{f.t}</div>}
               </div>
             ))}
           </div>
-          <p className="mt-4 max-w-[560px] text-center text-[15px] text-muted-foreground">Початкові припущення для демонстрації логіки. Фактичні конверсії будуть визначені після запуску.</p>
+          <div className="mt-3 grid grid-cols-[1fr_1fr_1.4fr] items-center gap-3 rounded-2xl border bg-muted/40 px-4 py-2.5">
+            <div><div className="text-[12px] font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="text-[15px] font-semibold tabular-nums">{v} → {bk} → {att} → {paid}</div></div>
+            <div><div className="text-[12px] font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="text-[15px] font-semibold text-muted-foreground">—</div></div>
+            <div className="text-[12px] text-muted-foreground">Фактичні дані будуть додані після запуску рекламних кампаній. Коефіцієнти — scenario assumptions.</div>
+          </div>
         </div>
       </div>
     </Frame>
   );
+}
+
+function Tween({ value }: { value: number }) {
+  const [d, setD] = useState(value);
+  const ref = useRef(value);
+  useEffect(() => {
+    const from = ref.current, t0 = performance.now();
+    let raf = 0;
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / 400), e = 1 - (1 - k) ** 3;
+      const x = Math.round(from + (value - from) * e);
+      ref.current = x; setD(x);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+  return <>{d}</>;
 }
 
 function S11() {
