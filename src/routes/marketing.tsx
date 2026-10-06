@@ -771,7 +771,7 @@ function S11() {
   );
 }
 
-const ApxCtx = createContext<() => void>(() => {});
+const ApxCtx = createContext<(m: "apx" | "thanks") => void>(() => {});
 function S12() {
   const go = useContext(GoCtx);
   const openApx = useContext(ApxCtx);
@@ -795,8 +795,9 @@ function S12() {
           <Sparkles className="size-10 shrink-0 text-cyan" />
           <p className="text-[30px] leading-snug font-bold">NeuroMath Academy переходить від ідеї нового бренду до керованої системи запуску, вимірювання та — після підтвердження даними — масштабування.</p>
         </div>
-        <div className="-mt-3 -mb-6 flex justify-end">
-          <button onClick={openApx} className="ui-control rounded-full border border-border bg-card/80 px-4 py-1.5 text-[14px] font-semibold text-muted-foreground transition hover:border-primary/50 hover:text-primary">Додаткові матеріали ↗</button>
+        <div className="-mt-3 -mb-6 flex justify-end gap-2">
+          <button onClick={() => openApx("apx")} className="ui-control rounded-full border border-border bg-card/80 px-4 py-1.5 text-[14px] font-semibold text-muted-foreground transition hover:border-primary/50 hover:text-primary">Додаткові матеріали ↗</button>
+          <button onClick={() => openApx("thanks")} className="ui-control rounded-full border border-border bg-card/80 px-4 py-1.5 text-[14px] font-semibold text-muted-foreground transition hover:border-primary/50 hover:text-primary">Подяка 💜</button>
         </div>
       </div>
     </Frame>
@@ -883,7 +884,47 @@ function A3() {
     </div>
   );
 }
-const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }, { t: "Подяка · Beetroot Academy", C: A3 }];
+const APX = [{ t: "SWOT-аналіз", C: A1 }, { t: "Що вимірюватимемо після запуску · прогноз і факт", C: A2 }];
+
+const MOODS: [string, string][] = [["🤩", "Натхненний"], ["😊", "Радісний"], ["😌", "Спокійний"], ["🤔", "Задумливий"], ["😴", "Втомлений"], ["💪", "Енергійний"], ["🥳", "Святковий"], ["😅", "Трохи хвилююсь"], ["🧠", "Готовий до нових знань"]];
+function Mood() {
+  const [m, setM] = useState<number | null>(null);
+  return (
+    <div className="slide-canvas relative flex h-full w-full flex-col items-center justify-center overflow-hidden bg-background px-20 py-16">
+      <div className="pointer-events-none absolute -top-40 -left-32 size-[620px] rounded-full bg-primary/[0.07] blur-3xl" />
+      <span className="relative rounded-full bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground">І НАОСТАНОК</span>
+      <h2 className="relative mt-6 text-center font-display text-[72px] leading-none font-bold tracking-[-0.03em]">А який у вас сьогодні <span className="text-brand">настрій?</span></h2>
+      <div className="relative mt-14 grid grid-cols-3 gap-5">
+        {MOODS.map(([e, t], j) => (
+          <button key={t} onClick={() => setM(j)} className={`flex w-[340px] items-center gap-5 rounded-3xl border bg-card px-6 py-5 text-left shadow-card transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 ${m === j ? "scale-[1.03] border-primary ring-2 ring-primary/20" : m !== null ? "opacity-60" : ""}`}>
+            <span className="text-[48px] leading-none">{e}</span><span className={`text-[22px] font-semibold ${m === j ? "text-primary" : ""}`}>{t}</span>
+          </button>
+        ))}
+      </div>
+      <p className="relative mt-10 h-8 text-[24px] text-muted-foreground">{m !== null ? `Дякую! Ваш настрій: ${MOODS[m]![1].toLowerCase()} ${MOODS[m]![0]}` : "Оберіть один варіант"}</p>
+    </div>
+  );
+}
+function ThanksLayer({ onClose }: { onClose: () => void }) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { e.stopImmediatePropagation(); if (e.key === "Escape") { e.preventDefault(); onClose(); } };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose]);
+  const pill = "inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-card px-4 py-1.5 text-sm font-semibold transition hover:border-primary/50 hover:bg-accent hover:text-primary";
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex flex-col bg-muted animate-in fade-in duration-300">
+      <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled>{v === 0 ? <A3 /> : <Mood />}</Scaled></div>
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
+        {v === 0
+          ? <><button onClick={onClose} className={pill}><ChevronLeft className="size-4" />Назад до презентації</button><button onClick={() => setV(1)} className="inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow-glow">І наостанок… →</button></>
+          : <button onClick={() => setV(0)} className={pill}><ChevronLeft className="size-4" />Назад до подяки</button>}
+        <span className="mx-1 h-6 w-px bg-border" />
+        <button onClick={onClose} className={pill} aria-label="Закрити"><X className="size-4" />Закрити</button>
+      </div>
+    </div>, document.body);
+}
 
 function ApxLayer({ onClose }: { onClose: () => void }) {
   const [v, setV] = useState<number | null>(null);
@@ -999,8 +1040,9 @@ function Deck() {
   if (pres) {
     const S = SLIDES[i]!;
     return (
-      <GoCtx.Provider value={(n) => to(n - 1)}><ApxCtx.Provider value={() => setApx(true)}>
-        {apx && <ApxLayer onClose={() => { setApx(false); to(N - 1); }} />}
+      <GoCtx.Provider value={(n) => to(n - 1)}><ApxCtx.Provider value={(m) => setApx(m)}>
+        {apx === "apx" && <ApxLayer onClose={() => { setApx(false); to(N - 1); }} />}
+        {apx === "thanks" && <ThanksLayer onClose={() => { setApx(false); to(N - 1); }} />}
         <div className="fixed inset-0 z-50 flex flex-col bg-muted">
           <div className="min-h-0 flex-1 px-4 pt-4 pb-[76px]"><Scaled><S key={i} /></Scaled></div>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-3 rounded-full border border-primary/20 glass px-3 py-2 shadow-card">
@@ -1035,8 +1077,9 @@ function Deck() {
   }
 
   return (
-    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}><ApxCtx.Provider value={() => setApx(true)}>
-      {apx && <ApxLayer onClose={() => setApx(false)} />}
+    <GoCtx.Provider value={(n) => document.getElementById(`slide-${n}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}><ApxCtx.Provider value={(m) => setApx(m)}>
+      {apx === "apx" && <ApxLayer onClose={() => setApx(false)} />}
+      {apx === "thanks" && <ThanksLayer onClose={() => setApx(false)} />}
       <header className="ui-control sticky top-0 z-40 border-b glass">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-3">
           <div className="flex items-center gap-3">
