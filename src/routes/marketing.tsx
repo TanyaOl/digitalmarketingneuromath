@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles } from "lucide-react";
+import { createContext, Fragment, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { Brain, ChevronLeft, ChevronRight, Maximize2, Minimize2, Printer, Check, AlertCircle, CircleDot, Mail, FileText, Search, Users, Target, Sparkles, ExternalLink, LayoutGrid, RefreshCw, Paperclip, X } from "lucide-react";
 import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import report1 from "@/assets/creatives/report1.png.asset.json";
-import report2 from "@/assets/creatives/report2.png.asset.json";
 
 export const Route = createFileRoute("/marketing")({
   head: () => ({
@@ -50,20 +49,53 @@ function Scaled({ children }: { children: ReactNode }) {
   );
 }
 
+const SITE = "https://neuromath-academydg.vercel.app/";
+const STAGES = [
+  ["RESEARCH", "ДОСЛІДЖЕННЯ", 2, "Ринок · Конкуренти · Аудиторія"],
+  ["STRATEGY", "СТРАТЕГІЯ", 4, "Позиціонування · Цінність"],
+  ["PROMOTION", "ПРОСУВАННЯ", 5, "Google · Meta · Social · SEO"],
+  ["CUSTOMER JOURNEY", "ШЛЯХ КЛІЄНТА", 8, "Тест · Email · PDF · Пробний урок"],
+  ["ANALYTICS", "АНАЛІТИКА", 10, "KPI-дерево · План / факт"],
+  ["LAUNCH", "ЗАПУСК", 11, "0–3 міс · перші фактичні дані"],
+  ["SCALING", "МАСШТАБУВАННЯ", 11, "6–12 міс · лише перевірене"],
+] as const;
+const stageOf = (n: number) => (n <= 3 ? 0 : n === 4 ? 1 : n <= 7 ? 2 : n <= 9 ? 3 : n === 10 ? 4 : n === 11 ? 5 : 6);
+const GoCtx = createContext<(n: number) => void>(() => {});
+const TITLES = ["Запуск бренду", "Дослідження", "Цільова аудиторія", "Стратегія", "Канали", "Social Media", "Paid Media", "Шлях клієнта", "Прогрів ліда", "KPI", "Roadmap", "Готова система"];
+
+function StageNav({ n }: { n: number }) {
+  const go = useContext(GoCtx);
+  const a = stageOf(n);
+  return (
+    <nav className="flex min-w-0 flex-1 items-center gap-1">
+      {STAGES.map(([en, ua, t], k) => {
+        const st = k < a ? "done" : k === a ? "active" : "future";
+        return (
+          <Fragment key={en}>
+            {k > 0 && <span className={`h-0.5 min-w-2 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
+            <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1.5 py-1 text-[11px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
+              <span className={`grid size-[18px] place-items-center rounded-full text-[9px] font-bold ${st === "active" ? "bg-brand text-primary-foreground ring-4 ring-primary/15" : st === "done" ? "bg-primary/15 text-primary" : "border bg-card"}`}>{st === "done" ? <Check className="size-3" /> : String(k + 1).padStart(2, "0")}</span>
+              {en} / {ua}
+            </button>
+          </Fragment>
+        );
+      })}
+    </nav>
+  );
+}
+
 function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: string; title: ReactNode; sub?: string; badge?: ReactNode; children: ReactNode }) {
   return (
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
-      <div className="relative flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="grid size-9 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
-          <span className="text-lg font-bold">Neuro<span className="text-brand">Math</span></span>
-        </div>
-        <span className="text-sm font-medium text-muted-foreground">{String(n).padStart(2, "0")} / 12 · {kicker}</span>
+      <div className="relative -mx-6 -mt-6 flex items-center gap-4">
+        <div className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
+        <StageNav n={n} />
+        <span className="shrink-0 text-sm font-bold text-muted-foreground">{String(n).padStart(2, "0")} / 12</span>
       </div>
-      <div className="relative mt-8">
-        {badge && <div className="mb-3">{badge}</div>}
+      <div className="relative mt-7">
+        <div className="mb-2 flex items-center gap-3"><span className="text-sm font-bold tracking-[0.14em] text-primary uppercase">{kicker}</span>{badge}</div>
         <h2 className={`max-w-[1200px] text-[52px] leading-[1.05] font-extrabold tracking-tight ${R}`}>{title}</h2>
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
@@ -93,24 +125,25 @@ const Flow = ({ items, className = "" }: { items: string[]; className?: string }
 
 function Browser({ src, alt, className = "" }: { src: string; alt: string; className?: string }) {
   return (
-    <div className={`overflow-hidden rounded-2xl border bg-card shadow-glow ${className}`}>
+    <a href={SITE} target="_blank" rel="noopener noreferrer" className={`group/br relative block overflow-hidden rounded-2xl border bg-card shadow-glow transition duration-300 hover:-translate-y-0.5 hover:border-primary/50 ${className}`}>
+      <span className="pointer-events-none absolute inset-0 z-10 grid place-items-center bg-primary/0 opacity-0 transition duration-300 group-hover/br:bg-primary/10 group-hover/br:opacity-100"><span className="inline-flex items-center gap-2 rounded-full bg-card px-5 py-2.5 text-lg font-bold text-primary shadow-glow">Відкрити сайт NeuroMath <ExternalLink className="size-4" /></span></span>
       <div className="flex items-center gap-2 border-b bg-muted px-4 py-2.5">
         <span className="size-2.5 rounded-full bg-destructive/60" /><span className="size-2.5 rounded-full bg-spark/70" /><span className="size-2.5 rounded-full bg-teal/60" />
         <span className="ml-3 rounded-md bg-card px-3 py-0.5 text-xs text-muted-foreground">neuromath-academydg.vercel.app</span>
       </div>
       <img src={src} alt={alt} className="block w-full" />
-    </div>
+    </a>
   );
 }
 
 function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const [v, setV] = useState(0);
+  const [v, setV] = useState(to);
   useEffect(() => {
     let raf = 0;
     const t0 = performance.now();
     const tick = (t: number) => {
       const p = Math.min(1, (t - t0) / 1200);
-      setV(Math.round(to * (1 - Math.pow(1 - p, 3))));
+      setV(Math.round(to * (0.6 + 0.4 * (1 - Math.pow(1 - p, 3)))));
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
