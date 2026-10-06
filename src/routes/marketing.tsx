@@ -903,7 +903,7 @@ function Mood() {
       </div>
       <div className="h-[80px] pt-3 text-center">
         {m !== null && <div key="msg" className="animate-in fade-in slide-in-from-bottom-1 duration-500">
-          <div className="font-display text-[26px] font-bold">Євгенію, дякуємо за цей Digital Marketing марафон! 💜</div>
+          <div className="font-display text-[26px] font-bold">Євгенію, дякуємо за цей Digital Marketing курс! 💜</div>
           <div className="mt-1 text-[18px] text-muted-foreground">Сподіваємося, після нашої групи твій настрій — точно №1 або №9 😉</div>
         </div>}
       </div>
