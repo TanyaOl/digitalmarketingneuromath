@@ -492,8 +492,32 @@ function EmailModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+function ReportModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopImmediatePropagation(); e.preventDefault(); onClose(); } else e.stopImmediatePropagation(); };
+    window.addEventListener("keydown", k, true);
+    return () => window.removeEventListener("keydown", k, true);
+  }, [onClose]);
+  return createPortal(
+    <div className="fixed inset-0 z-[100] grid place-items-center bg-night/50 p-6 backdrop-blur-sm animate-in fade-in duration-200" onClick={onClose}>
+      <div className="relative flex max-h-[92vh] w-[min(760px,94vw)] flex-col overflow-hidden rounded-3xl bg-card shadow-glow" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-2 border-b px-5 py-3 text-sm font-semibold"><FileText className="size-4 text-primary" />Персональний звіт NeuroMath Academy · 34/45 · 4 сторінки
+          <button onClick={onClose} aria-label="Закрити" className="ml-auto grid size-8 place-items-center rounded-full border hover:bg-accent"><X className="size-4" /></button>
+        </div>
+        <div className="min-h-0 overflow-y-auto">
+          {[reportPage1, reportPage2, reportPage3, reportPage4].map((p, i) => (
+            <img key={i} src={p.url} alt={`Персональний звіт NeuroMath, сторінка ${i + 1}`} className="block w-full" />
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
 function S9() {
   const [open, setOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
   const groups = [
     { t: "Сильні", I: Check, cls: "text-teal", items: "Числа та вирази · Рівняння · Ймовірність" },
     { t: "Увага", I: CircleDot, cls: "text-spark-foreground", items: "Функції · Планіметрія" },
