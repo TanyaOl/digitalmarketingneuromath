@@ -1002,7 +1002,7 @@ function Deck() {
   const [pres, setPres] = useState(false);
   const [ov, setOv] = useState(false);
   const [i, setI] = useState(0);
-  const [apx, setApx] = useState(false);
+  const [apx, setApx] = useState<false | "apx" | "thanks">(false);
   const N = SLIDES.length;
   const go = useCallback((d: number) => setI((x) => Math.max(0, Math.min(N - 1, x + d))), [N]);
   const to = useCallback((n: number) => setI(Math.max(0, Math.min(N - 1, n))), [N]);
