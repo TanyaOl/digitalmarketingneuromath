@@ -5,7 +5,6 @@ import * as D from "@/data/marketing";
 import siteShot from "@/assets/creatives/site2.png.asset.json";
 import emailShot from "@/assets/creatives/email.png.asset.json";
 import { createPortal } from "react-dom";
-import report1 from "@/assets/creatives/report1.png.asset.json";
 import reportPage1 from "@/assets/report-page-1.jpg.asset.json";
 import reportPage2 from "@/assets/report-page-2.jpg.asset.json";
 import reportPage3 from "@/assets/report-page-3.jpg.asset.json";
