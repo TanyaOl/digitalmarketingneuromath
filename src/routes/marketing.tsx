@@ -868,7 +868,7 @@ function A3() {
             <div key={t} className="rounded-3xl border border-primary/10 bg-accent/60 p-6"><I className="size-8 text-primary" /><div className="mt-4 text-[18px] leading-snug">{t}</div></div>
           ))}
         </div>
-        <div className="mt-auto flex items-center gap-6">
+        <div className="mt-14 flex items-center gap-6">
           <div className="grid size-24 shrink-0 place-items-center rounded-full bg-accent"><Star className="size-10 text-primary" /></div>
           <div><div className="text-[18px] text-muted-foreground">Особлива подяка викладачу</div><div className="font-display text-[40px] leading-tight font-bold text-primary">Євгенію Теслі</div><div className="text-[18px] text-foreground/80">за знання, практику, підтримку та натхнення протягом навчання.</div></div>
         </div>
