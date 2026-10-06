@@ -567,7 +567,7 @@ function S12() {
   return (
     <Frame n={12} kicker="SCALING / ГОТОВА СИСТЕМА" title="Від дослідження до готової системи запуску">
       <div className="flex h-full flex-col gap-6">
-        <div className="relative grid grid-cols-7 gap-3">
+        <div className="relative grid flex-1 grid-cols-7 gap-3">
           <svg className="pointer-events-none absolute inset-x-0 top-[34px] h-2 w-full" preserveAspectRatio="none" viewBox="0 0 100 2"><line x1="6" y1="1" x2="94" y2="1" stroke="var(--primary)" strokeOpacity="0.35" strokeWidth="2" className="draw-line" vectorEffect="non-scaling-stroke" /></svg>
           {STAGES.map(([en, ua, t, d], i) => (
             <button key={en} onClick={() => go(t)} className={`group/s relative flex flex-col items-center text-center ${R}`} style={rise(i + 1)}>
@@ -580,7 +580,7 @@ function S12() {
             </button>
           ))}
         </div>
-        <div className={`flex flex-1 items-center gap-6 rounded-3xl bg-hero px-10 text-night-foreground ${R}`} style={rise(9)}>
+        <div className={`flex items-center gap-6 rounded-3xl bg-hero px-10 py-12 text-night-foreground ${R}`} style={rise(9)}>
           <Sparkles className="size-10 shrink-0 text-cyan" />
           <p className="text-[30px] leading-snug font-bold">NeuroMath Academy переходить від ідеї нового бренду до керованої системи запуску, вимірювання та — після підтвердження даними — масштабування.</p>
         </div>
