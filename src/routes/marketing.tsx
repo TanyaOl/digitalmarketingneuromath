@@ -220,7 +220,7 @@ function S2() {
           </Box>
         </div>
         <div className={`flex flex-col justify-center rounded-3xl bg-hero p-10 text-night-foreground ${R}`} style={rise(6)}>
-          <Badge>Головний висновок</Badge>
+          <span className="self-start"><Badge>Головний висновок</Badge></span>
           <p className="mt-6 text-[44px] leading-tight font-extrabold">Не конкурувати ціною.</p>
           <p className="mt-4 text-[28px] leading-snug font-semibold text-cyan">Конкурувати результатом, персоналізацією, методикою та довірою.</p>
         </div>
