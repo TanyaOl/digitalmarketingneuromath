@@ -72,13 +72,13 @@ function StageNav({ n }: { n: number }) {
   const go = useContext(GoCtx);
   const a = stageOf(n);
   return (
-    <nav className="flex min-w-0 flex-1 items-center gap-1">
+    <nav className="flex min-w-0 flex-1 items-center gap-0.5">
       {STAGES.map(([en, ua, t], k) => {
         const st = k < a ? "done" : k === a ? "active" : "future";
         return (
           <Fragment key={en}>
-            {k > 0 && <span className={`h-0.5 min-w-2 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
-            <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1.5 py-1 text-[11px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
+            {k > 0 && <span className={`h-0.5 min-w-1.5 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
+            <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1 py-1 text-[10.5px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
               <span className={`grid size-[18px] place-items-center rounded-full text-[9px] font-bold ${st === "active" ? "bg-brand text-primary-foreground ring-4 ring-primary/15" : st === "done" ? "bg-primary/15 text-primary" : "border bg-card"}`}>{st === "done" ? <Check className="size-3" /> : String(k + 1).padStart(2, "0")}</span>
               {en} / {ua}
             </button>
@@ -94,10 +94,12 @@ function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: 
     <div className="slide-canvas relative flex h-full w-full flex-col overflow-hidden bg-background px-20 pt-14 pb-12">
       <div className="slide-grid pointer-events-none absolute inset-0" />
       <div className="pointer-events-none absolute -top-40 -right-40 size-[520px] rounded-full bg-primary/10 blur-3xl" />
-      <div className="relative -mx-6 -mt-6 flex items-center gap-4">
+      <div className="relative -mt-6 -ml-6 -mr-16 flex items-center gap-4">
         <div className="grid size-8 shrink-0 place-items-center rounded-full bg-brand text-primary-foreground"><Brain className="size-4" /></div>
         <StageNav n={n} />
-        <span className="shrink-0 text-sm font-bold text-muted-foreground">{String(n).padStart(2, "0")} / 12</span>
+        <div className="ml-auto flex min-w-[104px] shrink-0 items-center justify-end self-stretch border-l border-border/70 pl-5 pr-2">
+          <span className="shrink-0 text-sm font-bold text-muted-foreground tabular-nums whitespace-nowrap">{String(n).padStart(2, "0")} / 12</span>
+        </div>
       </div>
       <div className="relative mt-7">
         <div className="mb-2 flex items-center gap-3"><span className="text-sm font-bold tracking-[0.14em] text-primary uppercase">{kicker}</span>{badge}</div>
@@ -626,7 +628,7 @@ function S10() {
           <div className="mt-3 grid grid-cols-[1fr_1fr_1.4fr] items-center gap-3 rounded-2xl border bg-muted/40 px-4 py-2.5">
             <div><div className="text-[12px] font-bold tracking-wider text-primary uppercase">Plan / План</div><div className="text-[15px] font-semibold tabular-nums">{v} → {bk} → {att} → {paid}</div></div>
             <div><div className="text-[12px] font-bold tracking-wider text-muted-foreground uppercase">Actual / Факт</div><div className="text-[15px] font-semibold text-muted-foreground">—</div></div>
-            <div className="text-[12px] text-muted-foreground">Фактичні дані будуть додані після запуску рекламних кампаній. Коефіцієнти — scenario assumptions.</div>
+            <div className="text-[14px] leading-[1.55] text-muted-foreground">Фактичні дані будуть додані після запуску рекламних кампаній. Коефіцієнти — сценарні припущення.</div>
           </div>
         </div>
       </div>
