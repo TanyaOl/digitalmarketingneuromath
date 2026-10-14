@@ -110,9 +110,14 @@ function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: 
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
       <div className="relative mt-8 min-h-0 flex-1">{children}</div>
+      <Credit />
     </div>
   );
 }
+
+const Credit = ({ className = "" }: { className?: string }) => (
+  <div className={`pointer-events-none absolute bottom-4 left-20 text-[14px] leading-none text-muted-foreground/70 ${className}`}>© 2026 NeuroMath Academy · підготувала Тетяна Олійник (Tetiana Oliinyk)</div>
+);
 
 const Badge = ({ children, tone = "primary" }: { children: ReactNode; tone?: "primary" | "warn" }) => (
   <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold tracking-wider uppercase ${tone === "warn" ? "bg-spark/20 text-spark-foreground" : "bg-accent text-accent-foreground"}`}>{children}</span>
