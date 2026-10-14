@@ -24,7 +24,7 @@ export const Route = createFileRoute("/marketing")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Deck,
+  component: DeckI18n,
 });
 
 /* ---------- primitives ---------- */
@@ -83,7 +83,7 @@ function StageNav({ n }: { n: number }) {
             {k > 0 && <span className={`h-0.5 min-w-1.5 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
             <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1 py-1 text-[10.5px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
               <span className={`grid size-[18px] place-items-center rounded-full text-[9px] font-bold ${st === "active" ? "bg-brand text-primary-foreground ring-4 ring-primary/15" : st === "done" ? "bg-primary/15 text-primary" : "border bg-card"}`}>{st === "done" ? <Check className="size-3" /> : String(k + 1).padStart(2, "0")}</span>
-              {en} / {ua}
+              {en}<span className="nm-ua-only"> / {ua}</span>
             </button>
           </Fragment>
         );
@@ -759,7 +759,7 @@ function S11() {
             <button key={s.m} onMouseEnter={() => setAct(i)} onMouseLeave={() => setAct(null)} onClick={() => setAct(i)} className={`relative flex flex-col text-left ${R}`} style={rise(i * 3 + 2)}>
               <div className={`mx-auto grid h-[52px] place-items-center rounded-full bg-brand px-6 text-lg font-extrabold text-primary-foreground shadow-glow transition ${on ? "scale-105" : ""}`}>{s.m}</div>
               <div className={`mt-4 flex w-full flex-1 flex-col rounded-3xl border-2 p-6 shadow-card transition duration-300 ${on ? "scale-[1.02] border-primary bg-accent/60" : "border-border bg-card"}`}>
-                <div className="text-[15px] font-bold tracking-wider text-primary">0{i + 1} · {s.en} / {s.n.toUpperCase()}</div>
+                <div className="text-[15px] font-bold tracking-wider text-primary">0{i + 1} · {s.en}<span className="nm-ua-only"> / {s.n.toUpperCase()}</span></div>
                 <div className="mt-1 text-[26px] font-extrabold">{s.n}</div>
                 <ul className="mt-3 space-y-1.5 text-[17px]">{s.items.map((x) => <li key={x} className="flex gap-2"><Check className="mt-1 size-4 shrink-0 text-primary" />{x}</li>)}</ul>
                 <div className="mt-auto rounded-xl bg-accent p-3 text-[16px] font-semibold text-accent-foreground">Ціль: «{s.goal}»</div>
@@ -1107,5 +1107,56 @@ function Deck() {
       </main>
       <Appendix />
     </ApxCtx.Provider></GoCtx.Provider>
+  );
+}
+
+// ============= Мультимовність: UA (за замовчуванням) / EN =============
+import EN from "@/data/i18n-en.json";
+const DICT = EN as Record<string, string>;
+const ATTRS = ["alt", "aria-label", "title", "placeholder"];
+const orig = new WeakMap<Node, string>(), done = new WeakMap<Node, string>();
+const attrOrig = new WeakMap<Element, Record<string, string>>();
+function useDomTranslate(lang: "uk" | "en") {
+  useEffect(() => {
+    const tx = (s: string) => { const k = s.replace(/\s+/g, " ").trim(); const bi = /^([^А-Яа-яЇїІіЄєҐґ]+?) \/ (.*[А-Яа-яЇїІіЄєҐґ].*)$/.exec(k); const v = bi ? bi[1] : DICT[k]; return v ? s.replace(k === s.trim() ? s.trim() : s.trim(), v) : null; };
+    const text = (n: Node) => {
+      const v = n.nodeValue ?? "";
+      if (lang === "en") { if (done.get(n) === v) return; const t = tx(v); if (t && t !== v) { orig.set(n, v); done.set(n, t); n.nodeValue = t; } }
+      else { const o = orig.get(n); if (o !== undefined && done.get(n) === v) { orig.delete(n); done.delete(n); n.nodeValue = o; } }
+    };
+    const el = (e: Element) => {
+      for (const a of ATTRS) { const v = e.getAttribute(a); if (!v) continue; const rec = attrOrig.get(e) ?? {};
+        if (lang === "en") { const t = tx(v); if (t && t !== v) { rec[a] = v; attrOrig.set(e, rec); e.setAttribute(a, t); } }
+        else if (rec[a]) { e.setAttribute(a, rec[a]); delete rec[a]; } }
+    };
+    const walk = (root: Node) => {
+      if (root.nodeType === 3) return text(root);
+      if (root.nodeType !== 1) return;
+      el(root as Element);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) n.nodeType === 3 ? text(n) : el(n as Element);
+    };
+    document.documentElement.lang = lang; document.documentElement.classList.toggle("nm-en", lang === "en");
+    walk(document.body);
+    if (lang === "uk") return;
+    const mo = new MutationObserver((ms) => { for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(walk); else if (m.type === "characterData") text(m.target); else el(m.target as Element); } });
+    mo.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+    return () => { mo.disconnect(); };
+  }, [lang]);
+}
+function DeckI18n() {
+  const [lang, setLang] = useState<"uk" | "en">("uk");
+  useEffect(() => { if (localStorage.getItem("nm-lang") === "en") setLang("en"); }, []);
+  useEffect(() => { localStorage.setItem("nm-lang", lang); }, [lang]);
+  useDomTranslate(lang);
+  return (
+    <>
+      <Deck />
+      <div translate="no" className="ui-control fixed left-3 bottom-3 z-[200] flex rounded-full border border-border bg-card/90 p-0.5 text-[13px] font-semibold shadow-card backdrop-blur print:hidden">
+        {(["uk", "en"] as const).map((l) => (
+          <button key={l} onClick={() => setLang(l)} className={`rounded-full px-2.5 py-1 transition ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>{l === "uk" ? "UA" : "EN"}</button>
+        ))}
+      </div>
+    </>
   );
 }

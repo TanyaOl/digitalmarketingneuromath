@@ -148,3 +148,4 @@
 }
 
 .slide-canvas :is(h1, h2, h3) { font-family: var(--font-display); }
+.nm-en .nm-ua-only { display: none; }
