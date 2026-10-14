@@ -1114,10 +1114,10 @@ function Deck() {
 import EN from "@/data/i18n-en.json";
 const DICT = EN as Record<string, string>;
 const ATTRS = ["alt", "aria-label", "title", "placeholder"];
+const orig = new WeakMap<Node, string>(), done = new WeakMap<Node, string>();
+const attrOrig = new WeakMap<Element, Record<string, string>>();
 function useDomTranslate(lang: "uk" | "en") {
   useEffect(() => {
-    const orig = new WeakMap<Node, string>(), done = new WeakMap<Node, string>();
-    const attrOrig = new WeakMap<Element, Record<string, string>>();
     const tx = (s: string) => { const k = s.replace(/\s+/g, " ").trim(); const v = DICT[k]; return v ? s.replace(k === s.trim() ? s.trim() : s.trim(), v) : null; };
     const text = (n: Node) => {
       const v = n.nodeValue ?? "";
