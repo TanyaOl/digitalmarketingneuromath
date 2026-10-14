@@ -1118,7 +1118,7 @@ const orig = new WeakMap<Node, string>(), done = new WeakMap<Node, string>();
 const attrOrig = new WeakMap<Element, Record<string, string>>();
 function useDomTranslate(lang: "uk" | "en") {
   useEffect(() => {
-    const tx = (s: string) => { const k = s.replace(/\s+/g, " ").trim(); const v = DICT[k]; return v ? s.replace(k === s.trim() ? s.trim() : s.trim(), v) : null; };
+    const tx = (s: string) => { const k = s.replace(/\s+/g, " ").trim(); const bi = /^([^А-Яа-яЇїІіЄєҐґ]+?) \/ (.*[А-Яа-яЇїІіЄєҐґ].*)$/.exec(k); const v = DICT[k] ?? (bi ? bi[1] : undefined); return v ? s.replace(k === s.trim() ? s.trim() : s.trim(), v) : null; };
     const text = (n: Node) => {
       const v = n.nodeValue ?? "";
       if (lang === "en") { if (done.get(n) === v) return; const t = tx(v); if (t && t !== v) { orig.set(n, v); done.set(n, t); n.nodeValue = t; } }
