@@ -83,7 +83,7 @@ function StageNav({ n }: { n: number }) {
             {k > 0 && <span className={`h-0.5 min-w-1.5 flex-1 rounded-full ${k <= a ? "bg-primary" : "bg-border"}`} />}
             <button onClick={() => go(t)} className={`flex shrink-0 items-center gap-1.5 rounded-full px-1 py-1 text-[10.5px] whitespace-nowrap transition hover:bg-accent ${st === "active" ? "font-extrabold text-primary" : st === "done" ? "font-semibold text-primary/60" : "font-medium text-muted-foreground/70"}`}>
               <span className={`grid size-[18px] place-items-center rounded-full text-[9px] font-bold ${st === "active" ? "bg-brand text-primary-foreground ring-4 ring-primary/15" : st === "done" ? "bg-primary/15 text-primary" : "border bg-card"}`}>{st === "done" ? <Check className="size-3" /> : String(k + 1).padStart(2, "0")}</span>
-              {en} / {ua}
+              {en}<span className="nm-ua-only"> / {ua}</span>
             </button>
           </Fragment>
         );
@@ -1136,7 +1136,7 @@ function useDomTranslate(lang: "uk" | "en") {
       const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
       for (let n = w.nextNode(); n; n = w.nextNode()) n.nodeType === 3 ? text(n) : el(n as Element);
     };
-    document.documentElement.lang = lang;
+    document.documentElement.lang = lang; document.documentElement.classList.toggle("nm-en", lang === "en");
     walk(document.body);
     if (lang === "uk") return;
     const mo = new MutationObserver((ms) => { for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(walk); else if (m.type === "characterData") text(m.target); else el(m.target as Element); } });
