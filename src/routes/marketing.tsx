@@ -759,7 +759,7 @@ function S11() {
             <button key={s.m} onMouseEnter={() => setAct(i)} onMouseLeave={() => setAct(null)} onClick={() => setAct(i)} className={`relative flex flex-col text-left ${R}`} style={rise(i * 3 + 2)}>
               <div className={`mx-auto grid h-[52px] place-items-center rounded-full bg-brand px-6 text-lg font-extrabold text-primary-foreground shadow-glow transition ${on ? "scale-105" : ""}`}>{s.m}</div>
               <div className={`mt-4 flex w-full flex-1 flex-col rounded-3xl border-2 p-6 shadow-card transition duration-300 ${on ? "scale-[1.02] border-primary bg-accent/60" : "border-border bg-card"}`}>
-                <div className="text-[15px] font-bold tracking-wider text-primary">0{i + 1} · {s.en} / {s.n.toUpperCase()}</div>
+                <div className="text-[15px] font-bold tracking-wider text-primary">0{i + 1} · {s.en}<span className="nm-ua-only"> / {s.n.toUpperCase()}</span></div>
                 <div className="mt-1 text-[26px] font-extrabold">{s.n}</div>
                 <ul className="mt-3 space-y-1.5 text-[17px]">{s.items.map((x) => <li key={x} className="flex gap-2"><Check className="mt-1 size-4 shrink-0 text-primary" />{x}</li>)}</ul>
                 <div className="mt-auto rounded-xl bg-accent p-3 text-[16px] font-semibold text-accent-foreground">Ціль: «{s.goal}»</div>
