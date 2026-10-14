@@ -110,9 +110,14 @@ function Frame({ n, kicker, title, sub, badge, children }: { n: number; kicker: 
         {sub && <p className={`mt-3 max-w-[1100px] text-xl text-muted-foreground ${R}`} style={rise(1)}>{sub}</p>}
       </div>
       <div className="relative mt-8 min-h-0 flex-1">{children}</div>
+      <Credit />
     </div>
   );
 }
+
+const Credit = ({ className = "" }: { className?: string }) => (
+  <div className={`pointer-events-none absolute bottom-4 left-20 text-[14px] leading-none text-muted-foreground/70 ${className}`}>© 2026 NeuroMath Academy · підготувала Тетяна Олійник (Tetiana Oliinyk)</div>
+);
 
 const Badge = ({ children, tone = "primary" }: { children: ReactNode; tone?: "primary" | "warn" }) => (
   <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-bold tracking-wider uppercase ${tone === "warn" ? "bg-spark/20 text-spark-foreground" : "bg-accent text-accent-foreground"}`}>{children}</span>
@@ -820,6 +825,7 @@ function ApxFrame({ k, title, children }: { k: number; title: string; children: 
       </div>
       <h2 className="relative mt-8 font-display text-[48px] leading-[1.06] font-bold tracking-[-0.02em]">{title}</h2>
       <div className="relative mt-8 min-h-0 flex-1">{children}</div>
+      <Credit />
     </div>
   );
 }
@@ -858,6 +864,7 @@ function A3() {
   return (
     <div className="slide-canvas relative flex h-full w-full overflow-hidden bg-background px-20 py-16">
       <div className="pointer-events-none absolute -right-32 -bottom-40 size-[620px] rounded-full bg-primary/[0.07] blur-3xl" />
+      <Credit />
       <div className="relative flex w-[58%] flex-col">
         <span className="inline-flex w-fit items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-bold tracking-wider text-accent-foreground"><Heart className="size-4 fill-current" />ПОДЯКА</span>
         <div className="mt-8 flex items-center gap-10">
@@ -1106,6 +1113,7 @@ function Deck() {
         ))}
       </main>
       <Appendix />
+      <footer className="mx-auto max-w-6xl px-6 pb-12 text-center text-sm text-muted-foreground">© 2026 NeuroMath Academy · Усі права захищено · підготувала Тетяна Олійник (Tetiana Oliinyk)</footer>
     </ApxCtx.Provider></GoCtx.Provider>
   );
 }
