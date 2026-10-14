@@ -24,7 +24,7 @@ export const Route = createFileRoute("/marketing")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Deck,
+  component: DeckI18n,
 });
 
 /* ---------- primitives ---------- */
@@ -1107,5 +1107,56 @@ function Deck() {
       </main>
       <Appendix />
     </ApxCtx.Provider></GoCtx.Provider>
+  );
+}
+
+// ============= Мультимовність: UA (за замовчуванням) / EN =============
+import EN from "@/data/i18n-en.json";
+const DICT = EN as Record<string, string>;
+const ATTRS = ["alt", "aria-label", "title", "placeholder"];
+function useDomTranslate(lang: "uk" | "en") {
+  useEffect(() => {
+    const orig = new WeakMap<Node, string>(), done = new WeakMap<Node, string>();
+    const attrOrig = new WeakMap<Element, Record<string, string>>();
+    const tx = (s: string) => { const k = s.replace(/\s+/g, " ").trim(); const v = DICT[k]; return v ? s.replace(k === s.trim() ? s.trim() : s.trim(), v) : null; };
+    const text = (n: Node) => {
+      const v = n.nodeValue ?? "";
+      if (lang === "en") { if (done.get(n) === v) return; const t = tx(v); if (t && t !== v) { orig.set(n, v); done.set(n, t); n.nodeValue = t; } }
+      else { const o = orig.get(n); if (o !== undefined && done.get(n) === v) { orig.delete(n); done.delete(n); n.nodeValue = o; } }
+    };
+    const el = (e: Element) => {
+      for (const a of ATTRS) { const v = e.getAttribute(a); if (!v) continue; const rec = attrOrig.get(e) ?? {};
+        if (lang === "en") { const t = tx(v); if (t && t !== v) { rec[a] = v; attrOrig.set(e, rec); e.setAttribute(a, t); } }
+        else if (rec[a]) { e.setAttribute(a, rec[a]); delete rec[a]; } }
+    };
+    const walk = (root: Node) => {
+      if (root.nodeType === 3) return text(root);
+      if (root.nodeType !== 1) return;
+      el(root as Element);
+      const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      for (let n = w.nextNode(); n; n = w.nextNode()) n.nodeType === 3 ? text(n) : el(n as Element);
+    };
+    document.documentElement.lang = lang;
+    walk(document.body);
+    if (lang === "uk") return;
+    const mo = new MutationObserver((ms) => { for (const m of ms) { if (m.type === "childList") m.addedNodes.forEach(walk); else if (m.type === "characterData") text(m.target); else el(m.target as Element); } });
+    mo.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+    return () => { mo.disconnect(); };
+  }, [lang]);
+}
+function DeckI18n() {
+  const [lang, setLang] = useState<"uk" | "en">("uk");
+  useEffect(() => { if (localStorage.getItem("nm-lang") === "en") setLang("en"); }, []);
+  useEffect(() => { localStorage.setItem("nm-lang", lang); }, [lang]);
+  useDomTranslate(lang);
+  return (
+    <>
+      <Deck />
+      <div translate="no" className="ui-control fixed left-3 bottom-3 z-[200] flex rounded-full border border-border bg-card/90 p-0.5 text-[13px] font-semibold shadow-card backdrop-blur print:hidden">
+        {(["uk", "en"] as const).map((l) => (
+          <button key={l} onClick={() => setLang(l)} className={`rounded-full px-2.5 py-1 transition ${lang === l ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}>{l === "uk" ? "UA" : "EN"}</button>
+        ))}
+      </div>
+    </>
   );
 }
