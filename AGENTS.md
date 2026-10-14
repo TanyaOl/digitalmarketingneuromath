@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - The /marketing deck renders its slides on a fixed 1600x900 canvas scaled to fit (Scaled component); content numbers live in src/data/marketing.ts. Why: guarantees 16:9 slides without scroll in browser, fullscreen and PDF.
+- The /marketing deck is bilingual (UA default, EN) via a DOM text translator using src/data/i18n-en.json keyed by the exact Ukrainian text. Why: translates every slide and pop-up without rewriting the frozen slide code; new UA text needs a matching key.
